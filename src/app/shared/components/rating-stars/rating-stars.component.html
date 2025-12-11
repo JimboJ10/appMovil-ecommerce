@@ -1,0 +1,9 @@
+<div class="rating-stars" [class]="'size-' + size">
+  <ion-icon
+    *ngFor="let star of stars"
+    [name]="getStarIcon(star)"
+    [class.filled]="star <= rating"
+    [class.interactive]="!readonly"
+    (click)="onStarClick(star)">
+  </ion-icon>
+</div>

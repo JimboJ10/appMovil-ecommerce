@@ -1,0 +1,45 @@
+<ion-card (click)="viewProduct()" class="product-card">
+  <!-- Badge de descuento -->
+  <div class="discount-badge" *ngIf="hasDiscount && showDiscount">
+    <span>-{{ discountPercentage }}%</span>
+  </div>
+
+  <!-- Imagen del producto -->
+  <div class="product-image">
+    <img [src]="product.imagen" [alt]="product.title" />
+  </div>
+
+  <!-- Contenido -->
+  <ion-card-content>
+    <!-- Título -->
+    <h3 class="product-title">{{ product.title }}</h3>
+
+    <!-- Rating -->
+    <div class="rating" *ngIf="product.avg_review && product.avg_review > 0">
+      <ion-icon 
+        *ngFor="let star of [1,2,3,4,5]" 
+        [name]="star <= product.avg_review ? 'star' : 'star-outline'"
+        [class.filled]="star <= product.avg_review">
+      </ion-icon>
+      <span class="rating-count">({{ product.count_review || 0 }})</span>
+    </div>
+
+    <!-- Precio -->
+    <div class="price-container">
+      <span class="current-price">${{ discountedPrice | number:'1.2-2' }}</span>
+      <span class="original-price" *ngIf="hasDiscount">
+        ${{ product.price_usd | number:'1.2-2' }}
+      </span>
+    </div>
+
+    <!-- Stock -->
+    <div class="stock-info" *ngIf="product.stock > 0">
+      <ion-icon name="checkmark-circle" color="success"></ion-icon>
+      <span>En stock</span>
+    </div>
+    <div class="stock-info out-of-stock" *ngIf="product.stock === 0">
+      <ion-icon name="close-circle" color="danger"></ion-icon>
+      <span>Agotado</span>
+    </div>
+  </ion-card-content>
+</ion-card>
