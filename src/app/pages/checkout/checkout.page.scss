@@ -1,0 +1,252 @@
+.contenedor-checkout {
+  padding: 16px;
+  padding-bottom: 100px;
+}
+
+.encabezado-seccion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+
+    ion-icon {
+      font-size: 22px;
+      color: var(--ion-color-primary);
+    }
+  }
+
+  ion-button {
+    --color: var(--ion-color-primary);
+    font-weight: 600;
+  }
+}
+
+.seccion-direccion,
+.seccion-resumen-productos,
+.seccion-resumen-pago,
+.seccion-metodo-pago {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.sin-direcciones {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  text-align: center;
+
+  ion-icon {
+    font-size: 60px;
+    color: #d1d5db;
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0 0 16px 0;
+  }
+}
+
+.lista-direcciones {
+  .direccion-item {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &.seleccionada {
+      border-color: var(--ion-color-primary);
+      background: rgba(255, 153, 0, 0.05);
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    ion-radio {
+      margin-top: 4px;
+    }
+
+    .info-direccion {
+      flex: 1;
+
+      h3 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #111827;
+        margin: 0 0 8px 0;
+      }
+
+      p {
+        font-size: 14px;
+        color: #6b7280;
+        margin: 0 0 4px 0;
+        line-height: 1.5;
+
+        &.direccion-texto {
+          color: #111827;
+          font-weight: 500;
+        }
+
+        &.telefono {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin-top: 8px;
+
+          ion-icon {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.lista-productos {
+  .producto-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .imagen-producto {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f3f4f6;
+      flex-shrink: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .info-producto {
+      flex: 1;
+
+      h4 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0 0 6px 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      p {
+        font-size: 12px;
+        color: #6b7280;
+        margin: 0;
+
+        &.precio {
+          font-weight: 600;
+          color: #111827;
+          margin-top: 4px;
+        }
+      }
+    }
+
+    .total-producto {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ion-color-primary);
+      align-self: center;
+    }
+  }
+}
+
+.detalle-pago {
+  .linea-pago {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 15px;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &.descuento {
+      span {
+        color: #10b981;
+        font-weight: 600;
+      }
+    }
+
+    &.envio {
+      .gratis {
+        color: #10b981;
+        font-weight: 700;
+      }
+    }
+
+    &.total {
+      padding-top: 16px;
+      border-top: 2px solid var(--border-color);
+      margin-top: 8px;
+
+      span {
+        font-size: 20px;
+        font-weight: 700;
+        color: #111827;
+      }
+    }
+  }
+}
+
+#paypal-button-container {
+  margin-top: 16px;
+}
+
+.mensaje-advertencia {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #fff3cd;
+  border-radius: 8px;
+  margin-top: 16px;
+
+  ion-icon {
+    font-size: 24px;
+    color: #ffc107;
+    flex-shrink: 0;
+  }
+
+  p {
+    font-size: 14px;
+    color: #856404;
+    margin: 0;
+    line-height: 1.5;
+  }
+}

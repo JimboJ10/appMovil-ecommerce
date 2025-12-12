@@ -1,0 +1,215 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="transparent">
+    <ion-buttons slot="start">
+      <ion-button (click)="volverLogin()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Crear Cuenta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="contenedor-registro">
+    <form [formGroup]="formularioRegistro" (ngSubmit)="registrarse()" class="formulario">
+      
+      <!-- Nombre -->
+      <div class="campo-formulario">
+        <ion-label position="stacked" class="etiqueta-campo">
+          Nombre <span class="requerido">*</span>
+        </ion-label>
+        <ion-item 
+          lines="none" 
+          class="campo-input"
+          [class.input-invalido]="campoEsInvalido('name')">
+          <ion-icon name="person-outline" slot="start" class="icono-campo"></ion-icon>
+          <ion-input
+            type="text"
+            formControlName="name"
+            placeholder="Juan"
+            autocomplete="given-name">
+          </ion-input>
+        </ion-item>
+        <div class="mensaje-error" *ngIf="campoEsInvalido('name')">
+          <ion-icon name="alert-circle"></ion-icon>
+          <span>{{ obtenerMensajeError('name') }}</span>
+        </div>
+      </div>
+
+      <!-- Apellido -->
+      <div class="campo-formulario">
+        <ion-label position="stacked" class="etiqueta-campo">
+          Apellido <span class="requerido">*</span>
+        </ion-label>
+        <ion-item 
+          lines="none" 
+          class="campo-input"
+          [class.input-invalido]="campoEsInvalido('surname')">
+          <ion-icon name="person-outline" slot="start" class="icono-campo"></ion-icon>
+          <ion-input
+            type="text"
+            formControlName="surname"
+            placeholder="Pérez"
+            autocomplete="family-name">
+          </ion-input>
+        </ion-item>
+        <div class="mensaje-error" *ngIf="campoEsInvalido('surname')">
+          <ion-icon name="alert-circle"></ion-icon>
+          <span>{{ obtenerMensajeError('surname') }}</span>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="campo-formulario">
+        <ion-label position="stacked" class="etiqueta-campo">
+          Correo Electrónico <span class="requerido">*</span>
+        </ion-label>
+        <ion-item 
+          lines="none" 
+          class="campo-input"
+          [class.input-invalido]="campoEsInvalido('email')">
+          <ion-icon name="mail-outline" slot="start" class="icono-campo"></ion-icon>
+          <ion-input
+            type="email"
+            formControlName="email"
+            placeholder="correo@ejemplo.com"
+            autocomplete="email"
+            inputmode="email">
+          </ion-input>
+        </ion-item>
+        <div class="mensaje-error" *ngIf="campoEsInvalido('email')">
+          <ion-icon name="alert-circle"></ion-icon>
+          <span>{{ obtenerMensajeError('email') }}</span>
+        </div>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="campo-formulario">
+        <ion-label position="stacked" class="etiqueta-campo">
+          Teléfono <span class="requerido">*</span>
+        </ion-label>
+        <ion-item 
+          lines="none" 
+          class="campo-input"
+          [class.input-invalido]="campoEsInvalido('phone')">
+          <ion-icon name="call-outline" slot="start" class="icono-campo"></ion-icon>
+          <ion-input
+            type="tel"
+            formControlName="phone"
+            placeholder="987654321"
+            autocomplete="tel"
+            inputmode="tel">
+          </ion-input>
+        </ion-item>
+        <div class="mensaje-error" *ngIf="campoEsInvalido('phone')">
+          <ion-icon name="alert-circle"></ion-icon>
+          <span>{{ obtenerMensajeError('phone') }}</span>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="campo-formulario">
+        <ion-label position="stacked" class="etiqueta-campo">
+          Contraseña <span class="requerido">*</span>
+        </ion-label>
+        <ion-item 
+          lines="none" 
+          class="campo-input"
+          [class.input-invalido]="campoEsInvalido('password')">
+          <ion-icon name="lock-closed-outline" slot="start" class="icono-campo"></ion-icon>
+          <ion-input
+            [type]="mostrarPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="••••••••"
+            autocomplete="new-password">
+          </ion-input>
+          <ion-button 
+            fill="clear" 
+            slot="end"
+            (click)="toggleMostrarPassword()">
+            <ion-icon 
+              [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'"
+              slot="icon-only">
+            </ion-icon>
+          </ion-button>
+        </ion-item>
+        
+        <!-- Requisitos de contraseña -->
+        <div class="requisitos-password" *ngIf="formularioRegistro.get('password')?.touched">
+          <p class="titulo-requisitos">La contraseña debe contener:</p>
+          <div class="requisito" [class.cumplido]="obtenerRequisitosPassword()?.tieneMayuscula">
+            <ion-icon [name]="obtenerRequisitosPassword()?.tieneMayuscula ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+            <span>Una letra mayúscula</span>
+          </div>
+          <div class="requisito" [class.cumplido]="obtenerRequisitosPassword()?.tieneMinuscula">
+            <ion-icon [name]="obtenerRequisitosPassword()?.tieneMinuscula ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+            <span>Una letra minúscula</span>
+          </div>
+          <div class="requisito" [class.cumplido]="obtenerRequisitosPassword()?.tieneNumero">
+            <ion-icon [name]="obtenerRequisitosPassword()?.tieneNumero ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+            <span>Un número</span>
+          </div>
+          <div class="requisito" [class.cumplido]="obtenerRequisitosPassword()?.tieneCaracterEspecial">
+            <ion-icon [name]="obtenerRequisitosPassword()?.tieneCaracterEspecial ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+            <span>Un símbolo (!@#$%...)</span>
+          </div>
+          <div class="requisito" [class.cumplido]="formularioRegistro.get('password')?.value?.length >= 8">
+            <ion-icon [name]="formularioRegistro.get('password')?.value?.length >= 8 ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+            <span>Mínimo 8 caracteres</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirmar Password -->
+      <div class="campo-formulario">
+        <ion-label position="stacked" class="etiqueta-campo">
+          Confirmar Contraseña <span class="requerido">*</span>
+        </ion-label>
+        <ion-item 
+          lines="none" 
+          class="campo-input"
+          [class.input-invalido]="campoEsInvalido('confirmarPassword')">
+          <ion-icon name="lock-closed-outline" slot="start" class="icono-campo"></ion-icon>
+          <ion-input
+            [type]="mostrarConfirmarPassword ? 'text' : 'password'"
+            formControlName="confirmarPassword"
+            placeholder="••••••••"
+            autocomplete="new-password">
+          </ion-input>
+          <ion-button 
+            fill="clear" 
+            slot="end"
+            (click)="toggleMostrarConfirmarPassword()">
+            <ion-icon 
+              [name]="mostrarConfirmarPassword ? 'eye-off-outline' : 'eye-outline'"
+              slot="icon-only">
+            </ion-icon>
+          </ion-button>
+        </ion-item>
+        <div class="mensaje-error" *ngIf="campoEsInvalido('confirmarPassword')">
+          <ion-icon name="alert-circle"></ion-icon>
+          <span>{{ obtenerMensajeError('confirmarPassword') }}</span>
+        </div>
+      </div>
+
+      <!-- Términos y Condiciones -->
+      <div class="campo-checkbox">
+        <ion-checkbox formControlName="aceptarTerminos"></ion-checkbox>
+        <ion-label class="texto-terminos">
+          Acepto los <span class="enlace">Términos y Condiciones</span> y la 
+          <span class="enlace">Política de Privacidad</span>
+        </ion-label>
+      </div>
+
+      <!-- Botón de Registro -->
+      <ion-button 
+        expand="block" 
+        type="submit"
+        class="boton-primario"
+        [disabled]="cargando || !formularioRegistro.valid">
+        <ion-spinner name="crescent" *ngIf="cargando"></ion-spinner>
+        {{ cargando ? 'Creando cuenta...' : 'Crear Cuenta' }}
+      </ion-button>
+    </form>
+  </div>
+</ion-content>

@@ -1,0 +1,55 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Categorías</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Refresher -->
+  <ion-refresher slot="fixed" (ionRefresh)="refrescarPagina($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Loading -->
+  <app-loading *ngIf="cargando" message="Cargando categorías..."></app-loading>
+
+  <!-- Contenido -->
+  <div *ngIf="!cargando" class="contenedor-categorias">
+    <!-- Lista de Categorías (Sidebar) -->
+    <div class="sidebar-categorias">
+      <div 
+        *ngFor="let categoria of categorias"
+        class="categoria-item"
+        [class.activa]="categoriaSeleccionada?._id === categoria._id"
+        (click)="seleccionarCategoria(categoria)">
+        <div class="categoria-icono">
+          <img [src]="categoria.imagen_home" [alt]="categoria.title" />
+        </div>
+        <p class="categoria-nombre">{{ categoria.title }}</p>
+      </div>
+    </div>
+
+    <!-- Grid de Productos -->
+    <div class="contenedor-productos">
+      <div class="encabezado-productos" *ngIf="categoriaSeleccionada">
+        <h2>{{ categoriaSeleccionada.title }}</h2>
+        <p>{{ productos.length }} productos</p>
+      </div>
+
+      <!-- Sin productos -->
+      <div class="sin-productos" *ngIf="productos.length === 0">
+        <ion-icon name="cube-outline"></ion-icon>
+        <h3>No hay productos disponibles</h3>
+        <p>En esta categoría aún no hay productos</p>
+      </div>
+
+      <!-- Grid de productos -->
+      <div class="grid-productos" *ngIf="productos.length > 0">
+        <app-product-card
+          *ngFor="let producto of productos"
+          [product]="producto">
+        </app-product-card>
+      </div>
+    </div>
+  </div>
+</ion-content>

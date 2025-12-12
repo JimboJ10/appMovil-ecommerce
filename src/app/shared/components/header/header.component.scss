@@ -1,0 +1,42 @@
+ion-toolbar {
+  --background: var(--ion-color-primary);
+  --color: white;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+}
+
+ion-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+ion-button {
+  --color: white;
+  position: relative;
+}
+
+ion-badge {
+  position: absolute;
+  top: 8px;
+  right: 6px;
+  font-size: 10px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+
+  &.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+ion-icon {
+  font-size: 24px;
+}

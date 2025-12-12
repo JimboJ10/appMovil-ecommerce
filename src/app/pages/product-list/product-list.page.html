@@ -1,0 +1,110 @@
+<app-header 
+  [title]="'Productos'"
+  [showBackButton]="true"
+  [showCartButton]="true"
+  [showSearchButton]="true">
+</app-header>
+
+<ion-content>
+  <!-- Refresher -->
+  <ion-refresher slot="fixed" (ionRefresh)="refrescarPagina($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Loading -->
+  <app-loading *ngIf="cargando" message="Cargando productos..."></app-loading>
+
+  <!-- Contenido -->
+  <div *ngIf="!cargando" class="contenedor-productos">
+    
+    <!-- Barra de filtros -->
+    <div class="barra-filtros">
+      <ion-button fill="outline" (click)="toggleFiltros()">
+        <ion-icon name="options-outline" slot="start"></ion-icon>
+        Filtros
+      </ion-button>
+      
+      <ion-select 
+        [(ngModel)]="ordenSeleccionado" 
+        (ionChange)="cambiarOrden($event)"
+        placeholder="Ordenar por"
+        interface="popover">
+        <ion-select-option value="recientes">Más recientes</ion-select-option>
+        <ion-select-option value="precio_asc">Precio: Menor a Mayor</ion-select-option>
+        <ion-select-option value="precio_desc">Precio: Mayor a Menor</ion-select-option>
+        <ion-select-option value="nombre_asc">Nombre: A - Z</ion-select-option>
+        <ion-select-option value="nombre_desc">Nombre: Z - A</ion-select-option>
+      </ion-select>
+    </div>
+
+    <!-- Panel de filtros expandible -->
+    <div class="panel-filtros" *ngIf="mostrarFiltros">
+      <h3>Filtrar por:</h3>
+      
+      <!-- Categoría -->
+      <div class="filtro-item">
+        <ion-label>Categoría</ion-label>
+        <ion-select 
+          [(ngModel)]="categoriaSeleccionada" 
+          (ionChange)="cambiarCategoria($event)"
+          placeholder="Todas las categorías">
+          <ion-select-option value="">Todas</ion-select-option>
+          <ion-select-option *ngFor="let cat of categorias" [value]="cat._id">
+            {{ cat.title }}
+          </ion-select-option>
+        </ion-select>
+      </div>
+
+      <!-- Rango de precio -->
+      <div class="filtro-item">
+        <ion-label>Precio: ${{ precioMin }} - ${{ precioMax }}</ion-label>
+        <ion-range 
+          [(ngModel)]="precioMin" 
+          [min]="0" 
+          [max]="10000"
+          [step]="10"
+          (ionChange)="cambiarPrecio()"
+          color="primary">
+        </ion-range>
+        <ion-range 
+          [(ngModel)]="precioMax" 
+          [min]="0" 
+          [max]="10000"
+          [step]="10"
+          (ionChange)="cambiarPrecio()"
+          color="primary">
+        </ion-range>
+      </div>
+
+      <!-- Botones -->
+      <div class="filtro-acciones">
+        <ion-button expand="block" (click)="aplicarFiltros()">
+          Aplicar Filtros
+        </ion-button>
+        <ion-button expand="block" fill="outline" (click)="limpiarFiltros()">
+          Limpiar
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Contador de resultados -->
+    <div class="contador-resultados">
+      <p>{{ productosFiltrados.length }} productos encontrados</p>
+    </div>
+
+    <!-- Sin productos -->
+    <div class="sin-productos" *ngIf="productosFiltrados.length === 0">
+      <ion-icon name="cube-outline"></ion-icon>
+      <h3>No se encontraron productos</h3>
+      <p>Intenta ajustar los filtros</p>
+    </div>
+
+    <!-- Grid de productos -->
+    <div class="grid-productos" *ngIf="productosFiltrados.length > 0">
+      <app-product-card
+        *ngFor="let producto of productosFiltrados"
+        [product]="producto">
+      </app-product-card>
+    </div>
+  </div>
+</ion-content>

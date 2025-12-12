@@ -1,0 +1,146 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Mi Carrito</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Loading -->
+  <app-loading *ngIf="cargando" message="Cargando carrito..."></app-loading>
+
+  <!-- Carrito vacío -->
+  <div class="carrito-vacio" *ngIf="!cargando && carrito.length === 0">
+    <ion-icon name="cart-outline"></ion-icon>
+    <h2>Tu carrito está vacío</h2>
+    <p>Agrega productos para comenzar tu compra</p>
+    <ion-button expand="block" (click)="continuarComprando()">
+      <ion-icon name="storefront-outline" slot="start"></ion-icon>
+      Ir a comprar
+    </ion-button>
+  </div>
+
+  <!-- Carrito con productos -->
+  <div *ngIf="!cargando && carrito.length > 0" class="contenedor-carrito">
+    <!-- Lista de productos -->
+    <div class="lista-productos">
+      <div *ngFor="let item of carrito" class="item-carrito">
+        <!-- Imagen -->
+        <div class="imagen-producto">
+          <img [src]="item.product.imagen" [alt]="item.product.title" />
+        </div>
+
+        <!-- Información -->
+        <div class="info-producto">
+          <h3 class="titulo">{{ item.product.title }}</h3>
+          <p class="categoria">{{ item.product.categorie?.title }}</p>
+          
+          <!-- Variedad si existe -->
+          <p class="variedad" *ngIf="obtenerImagenVariedad(item)">
+            <ion-icon name="options-outline"></ion-icon>
+            {{ obtenerImagenVariedad(item) }}
+          </p>
+
+          <!-- Precio -->
+          <div class="precios">
+            <span class="precio-actual">${{ item.price_unitario | number:'1.2-2' }}</span>
+            <span class="precio-original" *ngIf="item.discount > 0">
+              ${{ item.product.price_usd | number:'1.2-2' }}
+            </span>
+          </div>
+
+          <!-- Controles -->
+          <div class="controles">
+            <!-- Cantidad -->
+            <div class="controlador-cantidad">
+              <ion-button 
+                fill="outline" 
+                size="small"
+                (click)="actualizarCantidad(item, item.cantidad - 1)">
+                <ion-icon name="remove" slot="icon-only"></ion-icon>
+              </ion-button>
+              
+              <span class="cantidad">{{ item.cantidad }}</span>
+              
+              <ion-button 
+                fill="outline" 
+                size="small"
+                (click)="actualizarCantidad(item, item.cantidad + 1)">
+                <ion-icon name="add" slot="icon-only"></ion-icon>
+              </ion-button>
+            </div>
+
+            <!-- Botón eliminar -->
+            <ion-button 
+              fill="clear" 
+              color="danger"
+              (click)="confirmarEliminacion(item)">
+              <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </div>
+
+          <!-- Total del item -->
+          <div class="total-item">
+            <span>Total: ${{ item.total | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cupón de descuento -->
+    <div class="seccion-cupon">
+      <h3>¿Tienes un cupón?</h3>
+      <div class="input-cupon">
+        <ion-input
+          [(ngModel)]="codigoCupon"
+          placeholder="Ingresa el código"
+          [disabled]="cuponAplicado || aplicandoCupon">
+        </ion-input>
+        <ion-button 
+          [disabled]="cuponAplicado || aplicandoCupon || !codigoCupon.trim()"
+          (click)="aplicarCupon()">
+          {{ cuponAplicado ? 'Aplicado' : (aplicandoCupon ? 'Aplicando...' : 'Aplicar') }}
+        </ion-button>
+      </div>
+      <p class="mensaje-cupon" *ngIf="cuponAplicado">
+        <ion-icon name="checkmark-circle" color="success"></ion-icon>
+        ¡Cupón aplicado correctamente!
+      </p>
+    </div>
+
+    <!-- Resumen -->
+    <div class="seccion-resumen">
+      <h3>Resumen del pedido</h3>
+      
+      <div class="linea-resumen">
+        <span class="etiqueta">Subtotal ({{ resumen.items }} productos)</span>
+        <span class="valor">${{ resumen.subtotal | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="linea-resumen" *ngIf="resumen.discount > 0">
+        <span class="etiqueta descuento">Descuento</span>
+        <span class="valor descuento">-${{ resumen.discount | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="linea-resumen total">
+        <span class="etiqueta">Total</span>
+        <span class="valor">${{ resumen.total | number:'1.2-2' }}</span>
+      </div>
+
+      <ion-button 
+        expand="block" 
+        class="boton-checkout"
+        (click)="irACheckout()">
+        <ion-icon name="card-outline" slot="start"></ion-icon>
+        Proceder al pago
+      </ion-button>
+
+      <ion-button 
+        expand="block" 
+        fill="outline"
+        (click)="continuarComprando()">
+        <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+        Continuar comprando
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

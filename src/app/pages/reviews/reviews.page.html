@@ -1,0 +1,95 @@
+<app-header 
+  [title]="'Reseñas'"
+  [showBackButton]="true"
+  [showCartButton]="false">
+</app-header>
+
+<ion-content>
+  <!-- Loading -->
+  <app-loading *ngIf="cargando" message="Cargando reseñas..."></app-loading>
+
+  <!-- Contenido -->
+  <div *ngIf="!cargando" class="contenedor-resenas">
+    
+    <!-- Botón agregar reseña -->
+    <div class="boton-agregar" *ngIf="!mostrarFormulario && saleDetailId">
+      <ion-button expand="block" (click)="mostrarFormulario = true">
+        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+        Escribir Reseña
+      </ion-button>
+    </div>
+
+    <!-- Formulario de reseña -->
+    <div class="formulario-resena" *ngIf="mostrarFormulario">
+      <h3>{{ editando ? 'Editar Reseña' : 'Nueva Reseña' }}</h3>
+      
+      <div class="campo-calificacion">
+        <ion-label>Tu calificación:</ion-label>
+        <app-rating-stars 
+          [rating]="calificacion"
+          [readonly]="false"
+          (ratingChange)="onCalificacionChange($event)"
+          size="large">
+        </app-rating-stars>
+      </div>
+
+      <div class="campo-descripcion">
+        <ion-label position="stacked">Tu comentario:</ion-label>
+        <ion-textarea
+          [(ngModel)]="descripcion"
+          placeholder="Cuéntanos sobre tu experiencia con este producto..."
+          rows="6"
+          maxlength="500">
+        </ion-textarea>
+        <p class="contador-caracteres">{{ descripcion.length }}/500</p>
+      </div>
+
+      <div class="botones-formulario">
+        <ion-button expand="block" (click)="guardarResena()">
+          {{ editando ? 'Actualizar' : 'Publicar' }} Reseña
+        </ion-button>
+        <ion-button expand="block" fill="outline" (click)="cancelarFormulario()">
+          Cancelar
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Lista de reseñas -->
+    <div class="lista-resenas">
+      <h3>Reseñas de Clientes ({{ resenas.length }})</h3>
+
+      <!-- Sin reseñas -->
+      <div class="sin-resenas" *ngIf="resenas.length === 0">
+        <ion-icon name="star-outline"></ion-icon>
+        <p>Este producto aún no tiene reseñas</p>
+      </div>
+
+      <!-- Reseñas -->
+      <div *ngFor="let resena of resenas" class="resena-card">
+        <div class="resena-header">
+          <div class="usuario-info">
+            <div class="avatar">
+              <span>{{ resena.user.name.charAt(0) }}{{ resena.user.surname.charAt(0) }}</span>
+            </div>
+            <div>
+              <h4>{{ resena.user.name }} {{ resena.user.surname }}</h4>
+              <p class="fecha">{{ resena.createdAt | date:'dd/MM/yyyy' }}</p>
+            </div>
+          </div>
+          <ion-button fill="clear" *ngIf="resena.canEdit" (click)="editarResena(resena)">
+            <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </div>
+
+        <div class="resena-body">
+          <app-rating-stars 
+            [rating]="resena.cantidad" 
+            [readonly]="true"
+            size="small">
+          </app-rating-stars>
+          <p class="comentario">{{ resena.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,89 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Mi Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Loading -->
+  <div class="loading" *ngIf="cargando">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+
+  <!-- Contenido del perfil -->
+  <div *ngIf="!cargando && usuario" class="contenedor-perfil">
+    <!-- Tarjeta de información del usuario -->
+    <div class="tarjeta-usuario">
+      <div class="avatar-container">
+        <div class="avatar" *ngIf="!usuario.avatar">
+          <span>{{ obtenerIniciales() }}</span>
+        </div>
+        <img [src]="usuario.avatar" [alt]="usuario.name" class="avatar-img" *ngIf="usuario.avatar" />
+      </div>
+
+      <div class="info-usuario">
+        <h2 class="nombre">{{ usuario.name }} {{ usuario.surname }}</h2>
+        <p class="email">{{ usuario.email }}</p>
+        <p class="telefono" *ngIf="usuario.phone">
+          <ion-icon name="call-outline"></ion-icon>
+          {{ usuario.phone }}
+        </p>
+      </div>
+
+      <ion-button expand="block" fill="outline" class="boton-editar" (click)="editarPerfil()">
+        <ion-icon name="create-outline" slot="start"></ion-icon>
+        Editar Perfil
+      </ion-button>
+    </div>
+
+    <!-- Opciones del menú -->
+    <div class="seccion-menu">
+      <h3 class="titulo-seccion">Opciones</h3>
+
+      <div class="lista-opciones">
+        <div 
+          *ngFor="let opcion of menuOpciones"
+          class="item-opcion"
+          (click)="navegarA(opcion.ruta)">
+          <div class="icono-wrapper" [attr.data-color]="opcion.color">
+            <ion-icon [name]="opcion.icono"></ion-icon>
+          </div>
+          <span class="texto-opcion">{{ opcion.titulo }}</span>
+          <ion-icon name="chevron-forward-outline" class="icono-flecha"></ion-icon>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información de la aplicación -->
+    <div class="seccion-info">
+      <h3 class="titulo-seccion">Información</h3>
+
+      <div class="lista-info">
+        <div class="item-info">
+          <span class="etiqueta">Versión de la App</span>
+          <span class="valor">1.0.0</span>
+        </div>
+        <div class="item-info">
+          <span class="etiqueta">Términos y Condiciones</span>
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+        <div class="item-info">
+          <span class="etiqueta">Política de Privacidad</span>
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón de cerrar sesión -->
+    <div class="seccion-cerrar-sesion">
+      <ion-button 
+        expand="block" 
+        color="danger" 
+        fill="outline"
+        (click)="confirmarCerrarSesion()">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        Cerrar Sesión
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,146 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-icon name="storefront" class="logo-icono"></ion-icon>
+      <ion-title class="titulo-app">Mi Tienda</ion-title>
+    </ion-buttons>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="irABusqueda()">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [scrollEvents]="true">
+  <!-- Refresher -->
+  <ion-refresher slot="fixed" (ionRefresh)="refrescarPagina($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Loading -->
+  <app-loading *ngIf="cargando" message="Cargando productos..."></app-loading>
+
+  <!-- Contenido -->
+  <div *ngIf="!cargando">
+    <!-- Banner de descuento (opcional) -->
+    <div class="banner-descuento" *ngIf="mostrarBannerDescuento">
+      <div class="contenido-banner">
+        <ion-icon name="gift-outline"></ion-icon>
+        <span>¡Envío gratis en compras mayores a $50!</span>
+      </div>
+      <ion-button fill="clear" (click)="cerrarBannerDescuento()">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </div>
+
+    <!-- Sliders / Carrusel principal -->
+    <div class="seccion-slider" *ngIf="sliders.length > 0">
+      <swiper-container
+        [slidesPerView]="1"
+        [autoplay]="{ delay: 4000 }"
+        [loop]="true"
+        [pagination]="{ clickable: true }"
+        class="slider-principal">
+        <swiper-slide *ngFor="let slider of sliders">
+          <div class="slide-item">
+            <img [src]="slider.imagen_home" [alt]="slider.title" />
+          </div>
+        </swiper-slide>
+      </swiper-container>
+    </div>
+
+    <!-- Categorías -->
+    <div class="seccion-categorias" *ngIf="categorias.length > 0">
+      <div class="encabezado-seccion">
+        <h2>Categorías</h2>
+      </div>
+      
+      <div class="lista-categorias">
+        <div 
+          class="categoria-item"
+          *ngFor="let categoria of categorias"
+          (click)="irACategoria(categoria)">
+          <div class="categoria-imagen">
+            <img [src]="categoria.imagen_home" [alt]="categoria.title" />
+          </div>
+          <p class="categoria-titulo">{{ categoria.title }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flash Sale (si existe) -->
+    <div class="seccion-flash-sale" *ngIf="flashSale && productosFlashSale.length > 0">
+      <div class="encabezado-flash">
+        <div class="titulo-flash">
+          <ion-icon name="flash"></ion-icon>
+          <h2>Oferta Flash</h2>
+        </div>
+        <div class="contador-flash">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>{{ obtenerTiempoRestante() }}</span>
+        </div>
+      </div>
+
+      <div class="grid-productos">
+        <app-product-card
+          *ngFor="let producto of productosFlashSale.slice(0, 6)"
+          [product]="producto">
+        </app-product-card>
+      </div>
+    </div>
+
+    <!-- Mejores Productos -->
+    <div class="seccion-productos" *ngIf="mejoresProductos.length > 0">
+      <div class="encabezado-seccion">
+        <h2>Los Más Vendidos</h2>
+        <ion-button fill="clear" size="small">
+          Ver todo
+          <ion-icon name="arrow-forward" slot="end"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div class="grid-productos">
+        <app-product-card
+          *ngFor="let producto of mejoresProductos.slice(0, 6)"
+          [product]="producto">
+        </app-product-card>
+      </div>
+    </div>
+
+    <!-- Banner intermedio (opcional) -->
+    <div class="banner-intermedio">
+      <div class="contenido-banner-intermedio">
+        <h3>¡Ofertas increíbles cada día!</h3>
+        <p>Descubre nuestras promociones especiales</p>
+        <ion-button expand="block">Explorar Ofertas</ion-button>
+      </div>
+    </div>
+
+    <!-- Nuestros Productos -->
+    <div class="seccion-productos" *ngIf="nuestrosProductos.length > 0">
+      <div class="encabezado-seccion">
+        <h2>Nuevos Productos</h2>
+        <ion-button fill="clear" size="small">
+          Ver todo
+          <ion-icon name="arrow-forward" slot="end"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div class="grid-productos">
+        <app-product-card
+          *ngFor="let producto of nuestrosProductos.slice(0, 6)"
+          [product]="producto">
+        </app-product-card>
+      </div>
+    </div>
+
+    <!-- Botón volver arriba -->
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button size="small" (click)="volverArriba()">
+        <ion-icon name="arrow-up"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </div>
+</ion-content>

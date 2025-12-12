@@ -1,0 +1,238 @@
+<app-header 
+  [title]="'Mis Direcciones'"
+  [showBackButton]="true"
+  [showCartButton]="false">
+</app-header>
+
+<ion-content>
+  <!-- Loading -->
+  <app-loading *ngIf="cargando" message="Cargando direcciones..."></app-loading>
+
+  <!-- Contenido -->
+  <div *ngIf="!cargando" class="contenedor-direcciones">
+    
+    <!-- Sin direcciones -->
+    <div class="sin-direcciones" *ngIf="direcciones.length === 0 && !mostrarFormulario">
+      <ion-icon name="location-outline"></ion-icon>
+      <h3>No tienes direcciones guardadas</h3>
+      <p>Agrega una dirección para facilitar tus compras</p>
+      <ion-button expand="block" (click)="mostrarFormularioNuevo()">
+        <ion-icon name="add" slot="start"></ion-icon>
+        Agregar Dirección
+      </ion-button>
+    </div>
+
+    <!-- Lista de direcciones -->
+    <div *ngIf="direcciones.length > 0 && !mostrarFormulario">
+      <div class="encabezado-lista">
+        <h2>Direcciones guardadas ({{ direcciones.length }})</h2>
+        <ion-button fill="clear" (click)="mostrarFormularioNuevo()">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Agregar
+        </ion-button>
+      </div>
+
+      <div class="lista-direcciones">
+        <div *ngFor="let direccion of direcciones" class="direccion-card">
+          <div class="direccion-header">
+            <ion-icon name="location" color="primary"></ion-icon>
+            <h3>{{ direccion.name }} {{ direccion.surname }}</h3>
+          </div>
+
+          <div class="direccion-info">
+            <p class="direccion-completa">
+              <ion-icon name="home-outline"></ion-icon>
+              {{ direccion.address }}
+            </p>
+            <p class="ciudad-region">
+              {{ direccion.ciudad }}, {{ direccion.region }}, {{ direccion.pais }}
+            </p>
+            <p class="contacto">
+              <ion-icon name="call-outline"></ion-icon>
+              {{ direccion.telefono }}
+            </p>
+            <p class="email" *ngIf="direccion.email">
+              <ion-icon name="mail-outline"></ion-icon>
+              {{ direccion.email }}
+            </p>
+            <p class="referencia" *ngIf="direccion.referencia">
+              <ion-icon name="information-circle-outline"></ion-icon>
+              {{ direccion.referencia }}
+            </p>
+          </div>
+
+          <div class="direccion-acciones">
+            <ion-button fill="outline" size="small" (click)="mostrarFormularioEdicion(direccion)">
+              <ion-icon name="create-outline" slot="start"></ion-icon>
+              Editar
+            </ion-button>
+            <ion-button fill="outline" size="small" color="danger" (click)="confirmarEliminar(direccion)">
+              <ion-icon name="trash-outline" slot="start"></ion-icon>
+              Eliminar
+            </ion-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario de dirección -->
+    <div *ngIf="mostrarFormulario" class="contenedor-formulario">
+      <div class="encabezado-formulario">
+        <h2>{{ editando ? 'Editar Dirección' : 'Nueva Dirección' }}</h2>
+        <ion-button fill="clear" (click)="cancelarFormulario()">
+          <ion-icon name="close" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+
+      <form [formGroup]="formularioDireccion" (ngSubmit)="guardarDireccion()">
+        <!-- Nombre -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Nombre *</ion-label>
+          <ion-input
+            formControlName="name"
+            placeholder="Ingresa tu nombre"
+            [class.input-invalido]="campoInvalido('name')">
+          </ion-input>
+          <div class="mensaje-error" *ngIf="campoInvalido('name')">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>El nombre es requerido</span>
+          </div>
+        </div>
+
+        <!-- Apellido -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Apellido *</ion-label>
+          <ion-input
+            formControlName="surname"
+            placeholder="Ingresa tu apellido"
+            [class.input-invalido]="campoInvalido('surname')">
+          </ion-input>
+          <div class="mensaje-error" *ngIf="campoInvalido('surname')">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>El apellido es requerido</span>
+          </div>
+        </div>
+
+        <!-- País -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">País *</ion-label>
+          <ion-select
+            formControlName="pais"
+            placeholder="Selecciona un país"
+            [class.input-invalido]="campoInvalido('pais')">
+            <ion-select-option *ngFor="let pais of paises" [value]="pais">
+              {{ pais }}
+            </ion-select-option>
+          </ion-select>
+          <div class="mensaje-error" *ngIf="campoInvalido('pais')">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>El país es requerido</span>
+          </div>
+        </div>
+
+        <!-- Dirección -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Dirección *</ion-label>
+          <ion-textarea
+            formControlName="address"
+            placeholder="Calle, número, colonia..."
+            rows="3"
+            [class.input-invalido]="campoInvalido('address')">
+          </ion-textarea>
+          <div class="mensaje-error" *ngIf="campoInvalido('address')">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>La dirección es requerida</span>
+          </div>
+        </div>
+
+        <!-- Ciudad -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Ciudad *</ion-label>
+          <ion-input
+            formControlName="ciudad"
+            placeholder="Ingresa tu ciudad"
+            [class.input-invalido]="campoInvalido('ciudad')">
+          </ion-input>
+          <div class="mensaje-error" *ngIf="campoInvalido('ciudad')">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>La ciudad es requerida</span>
+          </div>
+        </div>
+
+        <!-- Región/Estado -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Región/Estado *</ion-label>
+          <ion-input
+            formControlName="region"
+            placeholder="Ingresa tu región o estado"
+            [class.input-invalido]="campoInvalido('region')">
+          </ion-input>
+          <div class="mensaje-error" *ngIf="campoInvalido('region')">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>La región es requerida</span>
+          </div>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Teléfono *</ion-label>
+          <ion-input
+            formControlName="telefono"
+            type="tel"
+            placeholder="Ingresa tu teléfono"
+            [class.input-invalido]="campoInvalido('telefono')">
+          </ion-input>
+          <div class="mensaje-error" *ngIf="campoInvalido('telefono')">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>El teléfono es requerido (9-15 dígitos)</span>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Email *</ion-label>
+          <ion-input
+            formControlName="email"
+            type="email"
+            placeholder="correo@ejemplo.com"
+            [class.input-invalido]="campoInvalido('email')">
+          </ion-input>
+          <div class="mensaje-error" *ngIf="campoInvalido('email')">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>El email es requerido y debe ser válido</span>
+          </div>
+        </div>
+
+        <!-- Referencia -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Referencia (Opcional)</ion-label>
+          <ion-input
+            formControlName="referencia"
+            placeholder="Entre qué calles, cerca de...">
+          </ion-input>
+        </div>
+
+        <!-- Nota -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Nota adicional (Opcional)</ion-label>
+          <ion-textarea
+            formControlName="nota"
+            placeholder="Instrucciones especiales de entrega"
+            rows="2">
+          </ion-textarea>
+        </div>
+
+        <!-- Botones -->
+        <div class="botones-formulario">
+          <ion-button expand="block" type="submit" class="boton-guardar">
+            <ion-icon name="save-outline" slot="start"></ion-icon>
+            {{ editando ? 'Actualizar' : 'Guardar' }} Dirección
+          </ion-button>
+          <ion-button expand="block" fill="outline" (click)="cancelarFormulario()">
+            Cancelar
+          </ion-button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ion-content>

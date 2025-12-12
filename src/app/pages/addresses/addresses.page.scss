@@ -1,0 +1,236 @@
+.contenedor-direcciones {
+  padding: 16px;
+}
+
+.sin-direcciones {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+
+  ion-icon {
+    font-size: 100px;
+    color: #d1d5db;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 15px;
+    color: #6b7280;
+    margin: 0 0 24px 0;
+  }
+
+  ion-button {
+    width: 250px;
+  }
+}
+
+.encabezado-lista {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+  }
+
+  ion-button {
+    --color: var(--ion-color-primary);
+    font-weight: 600;
+  }
+}
+
+.lista-direcciones {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.direccion-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid var(--ion-color-primary);
+
+  .direccion-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+
+    ion-icon {
+      font-size: 24px;
+    }
+
+    h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0;
+    }
+  }
+
+  .direccion-info {
+    margin-bottom: 16px;
+
+    p {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 14px;
+      color: #6b7280;
+      margin: 0 0 8px 0;
+      line-height: 1.5;
+
+      ion-icon {
+        font-size: 18px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+
+      &.direccion-completa {
+        color: #111827;
+        font-weight: 600;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .ciudad-region {
+      font-weight: 500;
+      color: #4b5563;
+    }
+  }
+
+  .direccion-acciones {
+    display: flex;
+    gap: 8px;
+
+    ion-button {
+      flex: 1;
+      --border-width: 2px;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: none;
+    }
+  }
+}
+
+// Formulario
+.contenedor-formulario {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  .encabezado-formulario {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--border-color);
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0;
+    }
+
+    ion-button {
+      --color: #6b7280;
+    }
+  }
+
+  .campo-formulario {
+    margin-bottom: 20px;
+
+    ion-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    ion-input,
+    ion-textarea,
+    ion-select {
+      --background: #f9fafb;
+      --padding-start: 12px;
+      --padding-end: 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 15px;
+      margin-top: 8px;
+
+      &.input-invalido {
+        border-color: #ef4444;
+      }
+    }
+
+    ion-textarea {
+      --padding-top: 12px;
+      --padding-bottom: 12px;
+    }
+
+    .mensaje-error {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      color: #ef4444;
+      font-size: 12px;
+
+      ion-icon {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .botones-formulario {
+    margin-top: 24px;
+
+    .boton-guardar {
+      --background: linear-gradient(135deg, #ff9900 0%, #ff6b00 100%);
+      --box-shadow: 0 4px 12px rgba(255, 153, 0, 0.4);
+      height: 50px;
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: none;
+      margin-bottom: 12px;
+
+      ion-icon {
+        font-size: 20px;
+      }
+    }
+
+    ion-button[fill="outline"] {
+      --border-width: 2px;
+      --border-color: var(--border-color);
+      height: 50px;
+      font-size: 15px;
+      font-weight: 600;
+      text-transform: none;
+    }
+  }
+}

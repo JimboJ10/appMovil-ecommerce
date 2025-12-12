@@ -1,0 +1,74 @@
+<app-header 
+  [title]="'Mis Pedidos'"
+  [showBackButton]="true"
+  [showCartButton]="false">
+</app-header>
+
+<ion-content>
+  <!-- Refresher -->
+  <ion-refresher slot="fixed" (ionRefresh)="refrescarPagina($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Loading -->
+  <app-loading *ngIf="cargando" message="Cargando pedidos..."></app-loading>
+
+  <!-- Contenido -->
+  <div *ngIf="!cargando" class="contenedor-ordenes">
+    
+    <!-- Sin órdenes -->
+    <div class="sin-ordenes" *ngIf="ordenes.length === 0">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <h3>No tienes pedidos</h3>
+      <p>Tus pedidos aparecerán aquí después de realizar una compra</p>
+      <ion-button expand="block" routerLink="/tabs/home">
+        <ion-icon name="storefront-outline" slot="start"></ion-icon>
+        Ir a Comprar
+      </ion-button>
+    </div>
+
+    <!-- Lista de órdenes -->
+    <div class="lista-ordenes" *ngIf="ordenes.length > 0">
+      <div 
+        *ngFor="let orden of ordenesFiltradas"
+        class="orden-card"
+        (click)="verDetalleOrden(orden)">
+        
+        <div class="orden-header">
+          <div class="orden-info">
+            <h3>Orden #{{ orden._id.substring(orden._id.length - 8) }}</h3>
+            <p class="fecha">{{ formatearFecha(orden.createdAt) }}</p>
+          </div>
+          <ion-chip [color]="obtenerColorEstado(obtenerEstadoOrden(orden))">
+            {{ obtenerEstadoOrden(orden) }}
+          </ion-chip>
+        </div>
+
+        <div class="orden-body">
+          <div class="orden-detalle">
+            <div class="detalle-item">
+              <ion-icon name="wallet-outline"></ion-icon>
+              <span>{{ orden.method_payment }}</span>
+            </div>
+            <div class="detalle-item">
+              <ion-icon name="card-outline"></ion-icon>
+              <span>{{ orden.currency_payment }}</span>
+            </div>
+          </div>
+
+          <div class="orden-total">
+            <span class="etiqueta">Total:</span>
+            <span class="valor">${{ orden.total | number:'1.2-2' }} {{ orden.currency_total }}</span>
+          </div>
+        </div>
+
+        <div class="orden-footer">
+          <ion-button fill="clear" size="small">
+            Ver Detalles
+            <ion-icon name="chevron-forward" slot="end"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

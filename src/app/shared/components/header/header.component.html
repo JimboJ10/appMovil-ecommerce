@@ -1,0 +1,32 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <!-- Botón de retroceso -->
+    <ion-buttons slot="start" *ngIf="showBackButton">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <!-- Título -->
+    <ion-title>{{ title }}</ion-title>
+
+    <!-- Botones de la derecha -->
+    <ion-buttons slot="end">
+      <!-- Botón de búsqueda -->
+      <ion-button *ngIf="showSearchButton" (click)="goToSearch()">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+
+      <!-- Botón del carrito con badge -->
+      <ion-button *ngIf="showCartButton && isAuthenticated" (click)="goToCart()">
+        <ion-icon slot="icon-only" name="cart"></ion-icon>
+        <ion-badge 
+          *ngIf="(cartCount$ | async) as count" 
+          [class.show]="count > 0"
+          color="danger">
+          {{ count }}
+        </ion-badge>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>

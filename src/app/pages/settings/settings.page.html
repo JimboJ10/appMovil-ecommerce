@@ -1,0 +1,203 @@
+<app-header 
+  [title]="'Configuración'"
+  [showBackButton]="true"
+  [showCartButton]="false">
+</app-header>
+
+<ion-content>
+  <div class="contenedor-settings">
+    
+    <!-- Sección de Perfil -->
+    <div class="seccion-perfil">
+      <div class="avatar-container">
+        <div class="avatar" *ngIf="!usuario?.avatar">
+          <span>{{ obtenerIniciales() }}</span>
+        </div>
+        <img [src]="usuario?.avatar" [alt]="usuario?.name" class="avatar-img" *ngIf="usuario?.avatar" />
+        <ion-button class="boton-cambiar-foto" fill="clear" size="small">
+          <ion-icon name="camera" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Información Personal -->
+    <div class="seccion-info">
+      <div class="encabezado-seccion">
+        <h2>Información Personal</h2>
+        <ion-button fill="clear" size="small" (click)="toggleEditarPerfil()">
+          <ion-icon [name]="editandoPerfil ? 'close' : 'create'" slot="start"></ion-icon>
+          {{ editandoPerfil ? 'Cancelar' : 'Editar' }}
+        </ion-button>
+      </div>
+
+      <form [formGroup]="formularioPerfil" *ngIf="editandoPerfil">
+        <!-- Nombre -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Nombre *</ion-label>
+          <ion-input
+            formControlName="name"
+            placeholder="Ingresa tu nombre"
+            [class.input-invalido]="campoInvalido('name')">
+          </ion-input>
+          <div class="mensaje-error" *ngIf="campoInvalido('name')">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>El nombre es requerido</span>
+          </div>
+        </div>
+
+        <!-- Apellido -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Apellido *</ion-label>
+          <ion-input
+            formControlName="surname"
+            placeholder="Ingresa tu apellido"
+            [class.input-invalido]="campoInvalido('surname')">
+          </ion-input>
+          <div class="mensaje-error" *ngIf="campoInvalido('surname')">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>El apellido es requerido</span>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Email *</ion-label>
+          <ion-input
+            formControlName="email"
+            type="email"
+            placeholder="correo@ejemplo.com"
+            [class.input-invalido]="campoInvalido('email')">
+          </ion-input>
+          <div class="mensaje-error" *ngIf="campoInvalido('email')">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>El email debe ser válido</span>
+          </div>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Teléfono</ion-label>
+          <ion-input
+            formControlName="phone"
+            type="tel"
+            placeholder="Ingresa tu teléfono"
+            [class.input-invalido]="campoInvalido('phone')">
+          </ion-input>
+          <div class="mensaje-error" *ngIf="campoInvalido('phone')">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>El teléfono debe tener entre 9 y 15 dígitos</span>
+          </div>
+        </div>
+
+        <!-- Fecha de Nacimiento -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Fecha de Nacimiento</ion-label>
+          <ion-input
+            formControlName="birthday"
+            type="date">
+          </ion-input>
+        </div>
+
+        <!-- Botón Guardar -->
+        <ion-button expand="block" class="boton-guardar" (click)="guardarPerfil()">
+          <ion-icon name="save-outline" slot="start"></ion-icon>
+          Guardar Cambios
+        </ion-button>
+      </form>
+
+      <!-- Vista de Solo Lectura -->
+      <div class="info-solo-lectura" *ngIf="!editandoPerfil">
+        <div class="info-item">
+          <ion-icon name="person-outline"></ion-icon>
+          <div>
+            <span class="etiqueta">Nombre Completo</span>
+            <span class="valor">{{ usuario?.name }} {{ usuario?.surname }}</span>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <ion-icon name="mail-outline"></ion-icon>
+          <div>
+            <span class="etiqueta">Email</span>
+            <span class="valor">{{ usuario?.email }}</span>
+          </div>
+        </div>
+
+        <div class="info-item" *ngIf="usuario?.phone">
+          <ion-icon name="call-outline"></ion-icon>
+          <div>
+            <span class="etiqueta">Teléfono</span>
+            <span class="valor">{{ usuario?.phone }}</span>
+          </div>
+        </div>
+
+        <div class="info-item" *ngIf="usuario?.birthday">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <div>
+            <span class="etiqueta">Fecha de Nacimiento</span>
+            <span class="valor">{{ usuario?.birthday | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Opciones Adicionales -->
+    <div class="seccion-opciones">
+      <h2>Preferencias</h2>
+      
+      <div class="lista-opciones">
+        <div class="opcion-item">
+          <div class="opcion-info">
+            <ion-icon name="notifications-outline"></ion-icon>
+            <span>Notificaciones Push</span>
+          </div>
+          <ion-toggle></ion-toggle>
+        </div>
+
+        <div class="opcion-item">
+          <div class="opcion-info">
+            <ion-icon name="mail-unread-outline"></ion-icon>
+            <span>Correos Promocionales</span>
+          </div>
+          <ion-toggle></ion-toggle>
+        </div>
+
+        <div class="opcion-item" (click)="navegarA('/addresses')">
+          <div class="opcion-info">
+            <ion-icon name="location-outline"></ion-icon>
+            <span>Mis Direcciones</span>
+          </div>
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+
+        <div class="opcion-item">
+          <div class="opcion-info">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <span>Cambiar Contraseña</span>
+          </div>
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de Información -->
+    <div class="seccion-acerca">
+      <h2>Acerca de</h2>
+      
+      <div class="lista-acerca">
+        <div class="item-acerca">
+          <span>Versión de la App</span>
+          <span>1.0.0</span>
+        </div>
+        <div class="item-acerca">
+          <span>Términos y Condiciones</span>
+          <ion-icon name="open-outline"></ion-icon>
+        </div>
+        <div class="item-acerca">
+          <span>Política de Privacidad</span>
+          <ion-icon name="open-outline"></ion-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

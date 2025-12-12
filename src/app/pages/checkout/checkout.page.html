@@ -1,0 +1,133 @@
+<app-header 
+  [title]="'Checkout'"
+  [showBackButton]="true"
+  [showCartButton]="false">
+</app-header>
+
+<ion-content>
+  <!-- Loading -->
+  <app-loading *ngIf="cargando" message="Cargando datos..."></app-loading>
+
+  <!-- Contenido -->
+  <div *ngIf="!cargando" class="contenedor-checkout">
+    
+    <!-- Sección de Dirección de Envío -->
+    <div class="seccion-direccion">
+      <div class="encabezado-seccion">
+        <h2>
+          <ion-icon name="location"></ion-icon>
+          Dirección de Envío
+        </h2>
+        <ion-button fill="clear" size="small" (click)="agregarNuevaDireccion()">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Nueva
+        </ion-button>
+      </div>
+
+      <!-- Sin direcciones -->
+      <div class="sin-direcciones" *ngIf="direcciones.length === 0">
+        <ion-icon name="location-outline"></ion-icon>
+        <p>No tienes direcciones guardadas</p>
+        <ion-button size="small" (click)="agregarNuevaDireccion()">
+          Agregar Dirección
+        </ion-button>
+      </div>
+
+      <!-- Lista de direcciones -->
+      <div class="lista-direcciones" *ngIf="direcciones.length > 0">
+        <div 
+          *ngFor="let direccion of direcciones"
+          class="direccion-item"
+          [class.seleccionada]="direccionSeleccionada?._id === direccion._id"
+          (click)="seleccionarDireccion(direccion)">
+          
+          <ion-radio [value]="direccion._id"></ion-radio>
+          
+          <div class="info-direccion">
+            <h3>{{ direccion.name }} {{ direccion.surname }}</h3>
+            <p class="direccion-texto">{{ direccion.address }}</p>
+            <p class="ciudad">{{ direccion.ciudad }}, {{ direccion.region }}, {{ direccion.pais }}</p>
+            <p class="telefono">
+              <ion-icon name="call-outline"></ion-icon>
+              {{ direccion.telefono }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen de Productos -->
+    <div class="seccion-resumen-productos">
+      <div class="encabezado-seccion">
+        <h2>
+          <ion-icon name="cart"></ion-icon>
+          Resumen de Productos ({{ carrito.length }})
+        </h2>
+      </div>
+
+      <div class="lista-productos">
+        <div *ngFor="let item of carrito" class="producto-item">
+          <div class="imagen-producto">
+            <img [src]="item.product.imagen" [alt]="item.product.title" />
+          </div>
+          <div class="info-producto">
+            <h4>{{ item.product.title }}</h4>
+            <p class="cantidad">Cantidad: {{ item.cantidad }}</p>
+            <p class="precio">${{ item.price_unitario | number:'1.2-2' }} x {{ item.cantidad }}</p>
+          </div>
+          <div class="total-producto">
+            ${{ item.total | number:'1.2-2' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen de Pago -->
+    <div class="seccion-resumen-pago">
+      <div class="encabezado-seccion">
+        <h2>
+          <ion-icon name="card"></ion-icon>
+          Resumen de Pago
+        </h2>
+      </div>
+
+      <div class="detalle-pago">
+        <div class="linea-pago">
+          <span>Subtotal</span>
+          <span>${{ resumen.subtotal | number:'1.2-2' }}</span>
+        </div>
+        <div class="linea-pago" *ngIf="resumen.discount > 0">
+          <span class="descuento">Descuento</span>
+          <span class="descuento">-${{ resumen.discount | number:'1.2-2' }}</span>
+        </div>
+        <div class="linea-pago envio">
+          <span>Envío</span>
+          <span class="gratis">GRATIS</span>
+        </div>
+        <div class="linea-pago total">
+          <span>Total</span>
+          <span>${{ resumen.total | number:'1.2-2' }} USD</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Método de Pago -->
+    <div class="seccion-metodo-pago">
+      <div class="encabezado-seccion">
+        <h2>
+          <ion-icon name="wallet"></ion-icon>
+          Método de Pago
+        </h2>
+      </div>
+
+      <!-- PayPal Button Container -->
+      <div id="paypal-button-container" *ngIf="paypalLoaded && direccionSeleccionada"></div>
+
+      <!-- Mensaje si no hay dirección seleccionada -->
+      <div class="mensaje-advertencia" *ngIf="!direccionSeleccionada">
+        <ion-icon name="alert-circle"></ion-icon>
+        <p>Por favor selecciona una dirección de envío para continuar</p>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,125 @@
+.contenedor-productos {
+  padding: 16px;
+}
+
+.barra-filtros {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  ion-button {
+    --border-width: 2px;
+    --border-color: var(--border-color);
+    font-weight: 600;
+    text-transform: none;
+  }
+
+  ion-select {
+    flex: 1;
+    --background: white;
+    --border-radius: 8px;
+    border: 2px solid var(--border-color);
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+.panel-filtros {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 16px 0;
+  }
+
+  .filtro-item {
+    margin-bottom: 20px;
+
+    ion-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    ion-select {
+      width: 100%;
+      --background: #f9fafb;
+      --border-radius: 8px;
+      border: 2px solid #e5e7eb;
+      padding: 8px 12px;
+      margin-top: 8px;
+    }
+
+    ion-range {
+      margin-top: 8px;
+    }
+  }
+
+  .filtro-acciones {
+    margin-top: 24px;
+
+    ion-button {
+      margin-bottom: 12px;
+      font-weight: 600;
+      text-transform: none;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.contador-resultados {
+  margin-bottom: 16px;
+
+  p {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+  }
+}
+
+.sin-productos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+
+  ion-icon {
+    font-size: 100px;
+    color: #d1d5db;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 15px;
+    color: #6b7280;
+    margin: 0;
+  }
+}
+
+.grid-productos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}

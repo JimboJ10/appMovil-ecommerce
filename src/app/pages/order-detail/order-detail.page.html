@@ -1,0 +1,136 @@
+<app-header 
+  [title]="'Detalle del Pedido'"
+  [showBackButton]="true"
+  [showCartButton]="false">
+</app-header>
+
+<ion-content>
+  <!-- Loading -->
+  <app-loading *ngIf="cargando" message="Cargando detalle..."></app-loading>
+
+  <!-- Contenido -->
+  <div *ngIf="!cargando && orden" class="contenedor-detalle">
+    
+    <!-- Información de la orden -->
+    <div class="seccion-orden">
+      <div class="encabezado-orden">
+        <h2>Orden #{{ orden._id.substring(orden._id.length - 8) }}</h2>
+        <ion-chip color="success">
+          <ion-icon name="checkmark-circle"></ion-icon>
+          <ion-label>Completado</ion-label>
+        </ion-chip>
+      </div>
+
+      <div class="info-orden">
+        <div class="info-item">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <div>
+            <span class="etiqueta">Fecha de compra</span>
+            <span class="valor">{{ formatearFecha(orden.createdAt) }}</span>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <ion-icon name="wallet-outline"></ion-icon>
+          <div>
+            <span class="etiqueta">Método de pago</span>
+            <span class="valor">{{ orden.method_payment }}</span>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <ion-icon name="card-outline"></ion-icon>
+          <div>
+            <span class="etiqueta">ID Transacción</span>
+            <span class="valor">{{ orden.n_transacccion }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dirección de envío -->
+    <div class="seccion-direccion" *ngIf="direccionEnvio">
+      <h3>
+        <ion-icon name="location"></ion-icon>
+        Dirección de Envío
+      </h3>
+
+      <div class="tarjeta-direccion">
+        <p class="nombre">{{ direccionEnvio.name }} {{ direccionEnvio.surname }}</p>
+        <p class="direccion">{{ direccionEnvio.address }}</p>
+        <p class="ciudad">{{ direccionEnvio.ciudad }}, {{ direccionEnvio.region }}, {{ direccionEnvio.pais }}</p>
+        <p class="telefono">
+          <ion-icon name="call-outline"></ion-icon>
+          {{ direccionEnvio.telefono }}
+        </p>
+        <p class="email" *ngIf="direccionEnvio.email">
+          <ion-icon name="mail-outline"></ion-icon>
+          {{ direccionEnvio.email }}
+        </p>
+        <p class="nota" *ngIf="direccionEnvio.nota">
+          <ion-icon name="information-circle-outline"></ion-icon>
+          {{ direccionEnvio.nota }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Productos -->
+    <div class="seccion-productos">
+      <h3>
+        <ion-icon name="cube"></ion-icon>
+        Productos ({{ detallesOrden.length }})
+      </h3>
+
+      <div class="lista-productos">
+        <div *ngFor="let detalle of detallesOrden" class="producto-item">
+          <div class="imagen-producto">
+            <img [src]="detalle.product.imagen" [alt]="detalle.product.title" />
+          </div>
+
+          <div class="info-producto">
+            <h4>{{ detalle.product.title }}</h4>
+            <p class="variedad" *ngIf="detalle.variedad">
+              Variedad: {{ detalle.variedad.valor }}
+            </p>
+            <p class="cantidad">Cantidad: {{ detalle.cantidad }}</p>
+            <p class="precio">${{ detalle.price_unitario | number:'1.2-2' }}</p>
+          </div>
+
+          <div class="total-producto">
+            ${{ detalle.total | number:'1.2-2' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen de pago -->
+    <div class="seccion-resumen">
+      <h3>
+        <ion-icon name="calculator"></ion-icon>
+        Resumen de Pago
+      </h3>
+
+      <div class="detalle-pago">
+        <div class="linea-pago">
+          <span>Subtotal</span>
+          <span>${{ calcularSubtotal() | number:'1.2-2' }}</span>
+        </div>
+
+        <div class="linea-pago" *ngIf="calcularDescuentoTotal() > 0">
+          <span class="descuento">Descuento</span>
+          <span class="descuento">-${{ calcularDescuentoTotal() | number:'1.2-2' }}</span>
+        </div>
+
+        <div class="linea-pago envio">
+          <span>Envío</span>
+          <span class="gratis">GRATIS</span>
+        </div>
+
+        <div class="linea-pago total">
+          <span>Total Pagado</span>
+          <span>${{ orden.total | number:'1.2-2' }} {{ orden.currency_total }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,132 @@
+.contenedor-ordenes {
+  padding: 16px;
+}
+
+.sin-ordenes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+
+  ion-icon {
+    font-size: 100px;
+    color: #d1d5db;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 15px;
+    color: #6b7280;
+    margin: 0 0 24px 0;
+  }
+
+  ion-button {
+    width: 200px;
+  }
+}
+
+.lista-ordenes {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.orden-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  .orden-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    background: #f9fafb;
+
+    .orden-info {
+      h3 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #111827;
+        margin: 0 0 4px 0;
+      }
+
+      .fecha {
+        font-size: 13px;
+        color: #6b7280;
+        margin: 0;
+      }
+    }
+
+    ion-chip {
+      font-weight: 600;
+      font-size: 12px;
+    }
+  }
+
+  .orden-body {
+    padding: 16px;
+
+    .orden-detalle {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+
+      .detalle-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        color: #6b7280;
+
+        ion-icon {
+          font-size: 18px;
+        }
+      }
+    }
+
+    .orden-total {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-color);
+
+      .etiqueta {
+        font-size: 14px;
+        color: #6b7280;
+      }
+
+      .valor {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--ion-color-primary);
+      }
+    }
+  }
+
+  .orden-footer {
+    padding: 0 16px 16px 16px;
+
+    ion-button {
+      --color: var(--ion-color-primary);
+      font-weight: 600;
+    }
+  }
+}

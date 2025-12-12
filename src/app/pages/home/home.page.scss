@@ -1,0 +1,257 @@
+ion-toolbar {
+  --background: var(--ion-color-primary);
+  --color: white;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+
+  .logo-icono {
+    font-size: 24px;
+    color: var(--ion-color-secondary);
+    margin-right: 8px;
+  }
+
+  .titulo-app {
+    font-size: 18px;
+    font-weight: 700;
+    padding: 0;
+  }
+}
+
+.banner-descuento {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+
+  .contenido-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+
+    ion-icon {
+      font-size: 24px;
+    }
+
+    span {
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
+
+  ion-button {
+    --color: white;
+  }
+}
+
+// Slider principal
+.seccion-slider {
+  margin-bottom: 20px;
+
+  .slider-principal {
+    width: 100%;
+    height: 200px;
+
+    .slide-item {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+}
+
+// Categorías
+.seccion-categorias {
+  padding: 20px 0;
+  background: white;
+  margin-bottom: 8px;
+
+  .lista-categorias {
+    display: flex;
+    gap: 16px;
+    padding: 0 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .categoria-item {
+      flex-shrink: 0;
+      width: 80px;
+      text-align: center;
+      cursor: pointer;
+
+      .categoria-imagen {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #f3f4f6;
+        margin-bottom: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+
+        &:active {
+          transform: scale(0.95);
+        }
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .categoria-titulo {
+        font-size: 12px;
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}
+
+// Flash Sale
+.seccion-flash-sale {
+  padding: 20px 16px;
+  background: linear-gradient(135deg, #ff9900 0%, #ff6b00 100%);
+  margin-bottom: 8px;
+
+  .encabezado-flash {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    .titulo-flash {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+
+      ion-icon {
+        font-size: 28px;
+        animation: flash 1.5s infinite;
+      }
+
+      h2 {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+      }
+    }
+
+    .contador-flash {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px 12px;
+      border-radius: 20px;
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+
+      ion-icon {
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+@keyframes flash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// Encabezado de secciones
+.encabezado-seccion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 16px 16px;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #131921;
+    margin: 0;
+  }
+
+  ion-button {
+    --color: var(--ion-color-secondary);
+    font-weight: 600;
+  }
+}
+
+// Grid de productos
+.seccion-productos {
+  padding: 20px 0;
+  background: white;
+  margin-bottom: 8px;
+}
+
+.grid-productos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 0 16px;
+}
+
+// Banner intermedio
+.banner-intermedio {
+  margin: 20px 16px;
+  background: linear-gradient(135deg, #131921 0%, #232f3e 100%);
+  border-radius: 16px;
+  overflow: hidden;
+
+  .contenido-banner-intermedio {
+    padding: 30px 20px;
+    text-align: center;
+    color: white;
+
+    h3 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+    }
+
+    p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+      margin: 0 0 20px 0;
+    }
+
+    ion-button {
+      --background: var(--ion-color-secondary);
+      --color: #000;
+      font-weight: 700;
+    }
+  }
+}
+
+// Fab button
+ion-fab-button {
+  --background: var(--ion-color-primary);
+  --color: white;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}

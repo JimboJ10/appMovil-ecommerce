@@ -1,0 +1,81 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="volver()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <!-- Barra de búsqueda -->
+    <ion-searchbar
+      [(ngModel)]="textoBusqueda"
+      (ionInput)="buscarProductos()"
+      (ionClear)="limpiarBusqueda()"
+      placeholder="Buscar productos..."
+      [debounce]="500"
+      animated>
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Búsquedas recientes (cuando no hay resultados) -->
+  <div class="seccion-recientes" *ngIf="!mostrarResultados && busquedasRecientes.length > 0">
+    <div class="encabezado-seccion">
+      <h3>Búsquedas Recientes</h3>
+      <ion-button fill="clear" size="small" (click)="limpiarBusquedasRecientes()">
+        Limpiar todo
+      </ion-button>
+    </div>
+
+    <div class="lista-recientes">
+      <div 
+        *ngFor="let busqueda of busquedasRecientes"
+        class="item-reciente">
+        <div class="contenido-reciente" (click)="seleccionarBusquedaReciente(busqueda)">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>{{ busqueda }}</span>
+        </div>
+        <ion-button fill="clear" (click)="eliminarBusquedaReciente(busqueda)">
+          <ion-icon slot="icon-only" name="close"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado de carga -->
+  <app-loading *ngIf="cargando" message="Buscando productos..."></app-loading>
+
+  <!-- Resultados de búsqueda -->
+  <div class="seccion-resultados" *ngIf="mostrarResultados && !cargando">
+    <!-- Sin resultados -->
+    <div class="sin-resultados" *ngIf="productos.length === 0">
+      <ion-icon name="search-outline"></ion-icon>
+      <h3>No encontramos resultados</h3>
+      <p>Intenta con otras palabras clave</p>
+    </div>
+
+    <!-- Con resultados -->
+    <div *ngIf="productos.length > 0">
+      <div class="encabezado-resultados">
+        <h3>Resultados ({{ productos.length }})</h3>
+      </div>
+
+      <div class="grid-productos">
+        <app-product-card
+          *ngFor="let producto of productos"
+          [product]="producto">
+        </app-product-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sugerencias iniciales (cuando no hay búsqueda) -->
+  <div class="seccion-sugerencias" *ngIf="!mostrarResultados && busquedasRecientes.length === 0">
+    <div class="contenido-sugerencias">
+      <ion-icon name="search-circle-outline"></ion-icon>
+      <h3>¿Qué estás buscando?</h3>
+      <p>Encuentra tus productos favoritos</p>
+    </div>
+  </div>
+</ion-content>

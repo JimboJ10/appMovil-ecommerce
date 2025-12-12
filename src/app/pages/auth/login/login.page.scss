@@ -1,0 +1,166 @@
+ion-content {
+  --background: linear-gradient(135deg, #131921 0%, #232f3e 100%);
+}
+
+.contenedor-login {
+  max-width: 450px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.encabezado {
+  text-align: center;
+  margin-bottom: 40px;
+
+  .icono-logo {
+    font-size: 80px;
+    color: #ff9900;
+    margin-bottom: 20px;
+  }
+
+  .titulo {
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 8px 0;
+  }
+
+  .subtitulo {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+  }
+}
+
+.formulario {
+  background: white;
+  border-radius: 20px;
+  padding: 30px 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.campo-formulario {
+  margin-bottom: 20px;
+
+  .etiqueta-campo {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+
+    .requerido {
+      color: #ef4444;
+    }
+  }
+
+  .campo-input {
+    --background: #f9fafb;
+    --border-radius: 12px;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+
+    &.input-invalido {
+      border-color: #ef4444;
+    }
+
+    &:focus-within {
+      border-color: #ff9900;
+      --background: white;
+    }
+
+    .icono-campo {
+      color: #6b7280;
+      margin-right: 12px;
+      font-size: 20px;
+    }
+
+    ion-input {
+      --padding-start: 0;
+      --padding-end: 0;
+      font-size: 15px;
+    }
+
+    .boton-toggle-password {
+      --color: #6b7280;
+      margin: 0;
+    }
+  }
+
+  .mensaje-error {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    color: #ef4444;
+    font-size: 12px;
+
+    .icono-error {
+      font-size: 16px;
+    }
+  }
+}
+
+.enlace-recuperar {
+  text-align: right;
+  margin-bottom: 24px;
+
+  ion-text {
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
+.boton-primario {
+  --background: linear-gradient(135deg, #ff9900 0%, #ff6b00 100%);
+  --box-shadow: 0 4px 12px rgba(255, 153, 0, 0.4);
+  height: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: none;
+  margin-bottom: 20px;
+
+  &:hover {
+    --background: linear-gradient(135deg, #ff8800 0%, #ff5500 100%);
+  }
+
+  ion-icon {
+    font-size: 20px;
+  }
+}
+
+.separador {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e5e7eb;
+  }
+
+  span {
+    padding: 0 16px;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.boton-secundario {
+  --border-color: #e5e7eb;
+  --border-width: 2px;
+  --color: #1f2937;
+  height: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: none;
+
+  ion-icon {
+    font-size: 20px;
+  }
+}

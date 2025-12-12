@@ -1,0 +1,188 @@
+<app-header 
+  [title]="producto?.title || 'Cargando...'"
+  [showBackButton]="true"
+  [showCartButton]="true"
+  [showSearchButton]="false">
+</app-header>
+
+<ion-content>
+  <!-- Loading -->
+  <app-loading *ngIf="cargando" message="Cargando producto..."></app-loading>
+
+  <!-- Contenido del producto -->
+  <div *ngIf="!cargando && producto">
+    <!-- Galería de imágenes con Swiper -->
+    <div class="seccion-galeria">
+      <swiper-container
+        [pagination]="{ clickable: true }"
+        [navigation]="true"
+        class="galeria-producto">
+        <!-- Imagen principal -->
+        <swiper-slide>
+          <div class="imagen-slide">
+            <img [src]="producto.imagen" [alt]="producto.title" />
+          </div>
+        </swiper-slide>
+        
+        <!-- Galería adicional -->
+        <swiper-slide *ngFor="let galeria of producto.galerias">
+          <div class="imagen-slide">
+            <img [src]="galeria.imagen" [alt]="producto.title" />
+          </div>
+        </swiper-slide>
+      </swiper-container>
+
+      <!-- Badge de descuento -->
+      <div class="badge-descuento" *ngIf="tieneDescuento">
+        <span>-{{ porcentajeDescuento }}% OFF</span>
+      </div>
+    </div>
+
+    <!-- Información del producto -->
+    <div class="contenedor-info">
+      <!-- Título y SKU -->
+      <div class="seccion-titulo">
+        <h1 class="titulo">{{ producto.title }}</h1>
+        <p class="sku">SKU: {{ producto.sku }}</p>
+      </div>
+
+      <!-- Rating -->
+      <div class="seccion-rating" *ngIf="producto.count_review && producto.count_review > 0">
+        <app-rating-stars 
+          [rating]="producto.avg_review || 0" 
+          [readonly]="true"
+          size="medium">
+        </app-rating-stars>
+        <span class="rating-texto">({{ producto.count_review }} reseñas)</span>
+        <ion-button fill="clear" size="small" (click)="verResenas()">
+          Ver todas
+        </ion-button>
+      </div>
+
+      <!-- Precio -->
+      <div class="seccion-precio">
+        <div class="precio-actual">${{ precioConDescuento | number:'1.2-2' }}</div>
+        <div class="precio-original" *ngIf="tieneDescuento">
+          <span class="tachado">${{ producto.price_usd | number:'1.2-2' }}</span>
+          <span class="ahorro">Ahorras ${{ (producto.price_usd - precioConDescuento) | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <!-- Stock -->
+      <div class="seccion-stock">
+        <ion-chip [color]="obtenerStockDisponible() > 0 ? 'success' : 'danger'">
+          <ion-icon [name]="obtenerStockDisponible() > 0 ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+          <ion-label>
+            {{ obtenerStockDisponible() > 0 ? 'Disponible (' + obtenerStockDisponible() + ' unidades)' : 'Agotado' }}
+          </ion-label>
+        </ion-chip>
+      </div>
+
+      <!-- Variedades (si tiene inventario múltiple) -->
+      <div class="seccion-variedades" *ngIf="producto.type_inventario === 2 && producto.variedades && producto.variedades.length > 0">
+        <h3>Selecciona una variedad:</h3>
+        <div class="lista-variedades">
+          <ion-chip 
+            *ngFor="let variedad of producto.variedades"
+            [class.seleccionada]="variedadSeleccionada?._id === variedad._id"
+            [disabled]="variedad.stock === 0"
+            (click)="seleccionarVariedad(variedad)">
+            <ion-label>
+              {{ variedad.valor }}
+              <span class="stock-variedad" *ngIf="variedad.stock > 0">({{ variedad.stock }})</span>
+              <span class="stock-variedad agotado" *ngIf="variedad.stock === 0">(Agotado)</span>
+            </ion-label>
+          </ion-chip>
+        </div>
+      </div>
+
+      <!-- Cantidad -->
+      <div class="seccion-cantidad" *ngIf="obtenerStockDisponible() > 0">
+        <h3>Cantidad:</h3>
+        <div class="controlador-cantidad">
+          <ion-button 
+            fill="outline" 
+            size="small"
+            (click)="decrementarCantidad()"
+            [disabled]="cantidad <= 1">
+            <ion-icon name="remove" slot="icon-only"></ion-icon>
+          </ion-button>
+          
+          <span class="numero-cantidad">{{ cantidad }}</span>
+          
+          <ion-button 
+            fill="outline" 
+            size="small"
+            (click)="incrementarCantidad()"
+            [disabled]="cantidad >= obtenerStockDisponible()">
+            <ion-icon name="add" slot="icon-only"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+
+      <!-- Tabs de información -->
+      <div class="seccion-tabs">
+        <div class="tabs-header">
+          <div 
+            class="tab-item"
+            [class.activo]="tabSeleccionada === 'descripcion'"
+            (click)="cambiarTab('descripcion')">
+            Descripción
+          </div>
+          <div 
+            class="tab-item"
+            [class.activo]="tabSeleccionada === 'especificaciones'"
+            (click)="cambiarTab('especificaciones')">
+            Especificaciones
+          </div>
+        </div>
+
+        <div class="tabs-contenido">
+          <!-- Descripción -->
+          <div class="tab-content" *ngIf="tabSeleccionada === 'descripcion'">
+            <p [innerHTML]="producto.description"></p>
+          </div>
+
+          <!-- Especificaciones -->
+          <div class="tab-content" *ngIf="tabSeleccionada === 'especificaciones'">
+            <div class="especificacion-item">
+              <span class="etiqueta">Categoría:</span>
+              <span class="valor">{{ producto.categorie.title }}</span>
+            </div>
+            <div class="especificacion-item">
+              <span class="etiqueta">Stock disponible:</span>
+              <span class="valor">{{ obtenerStockDisponible() }} unidades</span>
+            </div>
+            <div class="especificacion-item">
+              <span class="etiqueta">Tags:</span>
+              <span class="valor">
+                <ion-chip *ngFor="let tag of producto.tags" size="small">
+                  {{ tag }}
+                </ion-chip>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón agregar al carrito (fijo en la parte inferior) -->
+    <div class="footer-acciones">
+      <ion-button 
+        expand="block" 
+        class="boton-agregar"
+        [disabled]="obtenerStockDisponible() === 0 || (producto.type_inventario === 2 && !variedadSeleccionada)"
+        (click)="agregarAlCarrito()">
+        <ion-icon name="cart-outline" slot="start"></ion-icon>
+        {{ obtenerStockDisponible() === 0 ? 'Sin stock' : 'Agregar al carrito' }}
+      </ion-button>
+    </div>
+
+    <!-- Botón volver arriba -->
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="fab-scroll">
+      <ion-fab-button size="small" (click)="volverArriba()">
+        <ion-icon name="arrow-up"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </div>
+</ion-content>
