@@ -1,6 +1,6 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, throwError } from 'rxjs';
+import { catchError, throwError, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 
@@ -9,7 +9,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastController = inject(ToastController);
 
   return next(req).pipe(
-    catchError(async (error: HttpErrorResponse) => {
+    catchError((error: HttpErrorResponse) => {
       let errorMessage = 'Ocurrió un error inesperado';
 
       if (error.error instanceof ErrorEvent) {
@@ -29,15 +29,15 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         }
       }
 
-      // Mostrar toast con el error
-      const toast = await toastController.create({
+      // Mostrar toast con el error (sin await porque no estamos en función async)
+      toastController.create({
         message: errorMessage,
         duration: 3000,
         position: 'top',
         color: 'danger'
-      });
-      await toast.present();
+      }).then(toast => toast.present());
 
+      // Retornar el error como Observable
       return throwError(() => error);
     })
   );

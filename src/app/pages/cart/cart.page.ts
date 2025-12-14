@@ -51,12 +51,13 @@ export class CartPage implements OnInit {
       const user = await this.authService.getCurrentUser();
       
       if (!user) {
+        // Redirigir a login
         this.router.navigate(['/auth/login']);
         return;
       }
-
+  
       const respuesta = await this.cartService.getCartItems(user._id!).toPromise();
-      this.carrito = respuesta.carts;
+      this.carrito = respuesta?.carts || [];
       this.calcularResumen();
     } catch (error) {
       console.error('Error al cargar carrito:', error);

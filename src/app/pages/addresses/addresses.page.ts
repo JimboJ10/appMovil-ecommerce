@@ -67,7 +67,7 @@ export class AddressesPage implements OnInit {
       }
 
       const respuesta = await this.addressService.getAddresses(user._id!).toPromise();
-      this.direcciones = respuesta.address_client;
+      this.direcciones = respuesta?.address_client || [];
     } catch (error) {
       console.error('Error al cargar direcciones:', error);
       await this.mostrarToast('Error al cargar direcciones', 'danger');

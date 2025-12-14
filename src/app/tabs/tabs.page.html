@@ -1,30 +1,36 @@
 <ion-tabs>
   <ion-tab-bar slot="bottom">
-    <!-- Home Tab -->
+    <!-- Home Tab - Siempre visible -->
     <ion-tab-button tab="home" href="/tabs/home">
       <ion-icon aria-hidden="true" name="home"></ion-icon>
       <ion-label>Inicio</ion-label>
     </ion-tab-button>
 
-    <!-- Categories Tab -->
+    <!-- Categories Tab - Siempre visible -->
     <ion-tab-button tab="categories" href="/tabs/categories">
       <ion-icon aria-hidden="true" name="grid"></ion-icon>
       <ion-label>Categorías</ion-label>
     </ion-tab-button>
 
-    <!-- Cart Tab -->
-    <ion-tab-button tab="cart" href="/tabs/cart">
+    <!-- Cart Tab - Con validación -->
+    <ion-tab-button 
+      tab="cart" 
+      [href]="isAuthenticated ? '/tabs/cart' : null"
+      (click)="handleCartClick()">
       <ion-icon aria-hidden="true" name="cart"></ion-icon>
       <ion-label>Carrito</ion-label>
-      <ion-badge *ngIf="(cartCount$ | async) as count" [class.show]="count > 0" color="danger">
+      <ion-badge *ngIf="isAuthenticated && (cartCount$ | async) as count" [class.show]="count > 0" color="danger">
         {{ count }}
       </ion-badge>
     </ion-tab-button>
 
-    <!-- Profile Tab -->
-    <ion-tab-button tab="profile" href="/tabs/profile">
-      <ion-icon aria-hidden="true" name="person"></ion-icon>
-      <ion-label>Perfil</ion-label>
+    <!-- Profile Tab - Con validación -->
+    <ion-tab-button 
+      tab="profile" 
+      [href]="isAuthenticated ? '/tabs/profile' : null"
+      (click)="handleProfileClick()">
+      <ion-icon aria-hidden="true" [name]="isAuthenticated ? 'person' : 'log-in'"></ion-icon>
+      <ion-label>{{ isAuthenticated ? 'Perfil' : 'Ingresar' }}</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>

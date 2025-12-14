@@ -22,7 +22,6 @@ export class ReviewsPage implements OnInit {
   producto: any = null;
   resenas: any[] = [];
   
-  // Para crear nueva reseña
   mostrarFormulario: boolean = false;
   calificacion: number = 0;
   descripcion: string = '';
@@ -52,11 +51,8 @@ export class ReviewsPage implements OnInit {
   async cargarResenas(productoId: string) {
     try {
       this.cargando = true;
-      // Aquí deberías tener un endpoint para obtener las reseñas del producto
-      // Por ahora simularemos la carga
       await new Promise(resolve => setTimeout(resolve, 1000));
       this.resenas = [];
-      
     } catch (error) {
       console.error('Error al cargar reseñas:', error);
     } finally {
@@ -82,19 +78,24 @@ export class ReviewsPage implements OnInit {
     try {
       const user = await this.authService.getCurrentUser();
       
-      const datosResena = {
+      // VALIDACIÓN MEJORADA
+      if (!user || !user._id) {
+        await this.mostrarToast('Error: Usuario no autenticado', 'danger');
+        this.router.navigate(['/auth/login']);
+        return;
+      }
+
+      const datosResena: any = {
         product: this.producto._id,
         sale_detail: this.saleDetailId,
-        user: user!._id,
+        user: user._id, // Ahora garantizamos que NO es undefined
         cantidad: this.calificacion,
         description: this.descripcion
       };
 
       if (this.editando && this.resenaEditando) {
-        await this.reviewService.updateReview({
-          _id: this.resenaEditando._id,
-          ...datosResena
-        }).toPromise();
+        datosResena._id = this.resenaEditando._id;
+        await this.reviewService.updateReview(datosResena).toPromise();
         await this.mostrarToast('Reseña actualizada correctamente', 'success');
       } else {
         await this.reviewService.createReview(datosResena).toPromise();

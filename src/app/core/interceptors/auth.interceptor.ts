@@ -8,14 +8,20 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return from(authService.getToken()).pipe(
     switchMap(token => {
+      console.log('🔐 Interceptor - Token:', token ? 'EXISTE' : 'NO EXISTE');
+
       if (token) {
-        const cloned = req.clone({
+        // 🔴 AGREGAR HEADER Authorization con formato Bearer
+        const clonedReq = req.clone({
           setHeaders: {
-            token: token
+            'Authorization': `Bearer ${token}`
           }
         });
-        return next(cloned);
+        
+        console.log('✅ Request con token:', clonedReq.url);
+        return next(clonedReq);
       }
+
       return next(req);
     })
   );

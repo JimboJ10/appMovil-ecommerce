@@ -171,7 +171,7 @@
       <ion-button 
         expand="block" 
         class="boton-agregar"
-        [disabled]="obtenerStockDisponible() === 0 || (producto.type_inventario === 2 && !variedadSeleccionada)"
+        [disabled]="obtenerStockDisponible() === 0"
         (click)="agregarAlCarrito()">
         <ion-icon name="cart-outline" slot="start"></ion-icon>
         {{ obtenerStockDisponible() === 0 ? 'Sin stock' : 'Agregar al carrito' }}

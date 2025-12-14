@@ -56,10 +56,40 @@ ion-toolbar {
       font-size: 20px;
     }
 
+    // ESTILOS ESPECÍFICOS PARA ION-INPUT
     ion-input {
-      --padding-start: 0;
-      --padding-end: 0;
-      font-size: 15px;
+      --padding-start: 0 !important;
+      --padding-end: 0 !important;
+      color: #111827 !important;
+      
+      input {
+        color: #111827 !important;
+        
+        &::placeholder {
+          color: #9ca3af !important;
+          opacity: 1 !important;
+        }
+      }
+    }
+
+    // BOTÓN DE TOGGLE PASSWORD
+    ion-button {
+      --color: #6b7280;
+      --background: transparent;
+      --background-hover: transparent;
+      --background-activated: transparent;
+      --padding-start: 8px;
+      --padding-end: 8px;
+      margin: 0;
+
+      ion-icon {
+        color: #6b7280 !important;
+        font-size: 22px;
+      }
+
+      &:hover ion-icon {
+        color: #ff9900 !important;
+      }
     }
   }
 

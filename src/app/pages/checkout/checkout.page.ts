@@ -69,7 +69,7 @@ export class CheckoutPage implements OnInit {
 
       // Cargar carrito
       const respuestaCarrito = await this.cartService.getCartItems(user._id!).toPromise();
-      this.carrito = respuestaCarrito.carts;
+      this.carrito = respuestaCarrito?.carts || [];
       this.resumen = this.cartService.calculateCartSummary(this.carrito);
 
       if (this.carrito.length === 0) {
@@ -80,7 +80,7 @@ export class CheckoutPage implements OnInit {
 
       // Cargar direcciones
       const respuestaDirecciones = await this.addressService.getAddresses(user._id!).toPromise();
-      this.direcciones = respuestaDirecciones.address_client;
+      this.direcciones = respuestaDirecciones?.address_client || [];
 
       if (this.direcciones.length > 0) {
         this.direccionSeleccionada = this.direcciones[0];

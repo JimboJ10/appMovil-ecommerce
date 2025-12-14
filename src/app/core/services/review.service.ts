@@ -12,11 +12,11 @@ export class ReviewService {
 
   constructor(private http: HttpClient) {}
 
-  createReview(review: Review): Observable<any> {
+  createReview(review: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/review/register`, review);
   }
 
-  updateReview(review: Review): Observable<any> {
+  updateReview(review: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/review/update`, review);
   }
 }

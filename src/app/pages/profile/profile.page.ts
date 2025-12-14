@@ -62,6 +62,11 @@ export class ProfilePage implements OnInit {
     try {
       this.cargando = true;
       this.usuario = await this.authService.getCurrentUser();
+      
+      if (!this.usuario) {
+        this.router.navigate(['/auth/login']);
+        return;
+      }
     } catch (error) {
       console.error('Error al cargar perfil:', error);
     } finally {

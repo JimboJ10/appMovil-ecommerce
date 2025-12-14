@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../../core/services/order.service';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Component({
   selector: 'app-order-detail',

@@ -18,6 +18,14 @@ export class ProductCardComponent {
   constructor(private router: Router) {}
 
   viewProduct() {
+    // 🔴 AGREGAR LOG PARA DEBUG
+    console.log('🔍 Navegando a producto:', this.product.slug);
+    
+    if (!this.product.slug) {
+      console.error('❌ El producto no tiene slug:', this.product);
+      return;
+    }
+    
     this.router.navigate(['/product-detail', this.product.slug]);
   }
 
@@ -32,10 +40,8 @@ export class ProductCardComponent {
 
     const discount = this.product.campaing_discount;
     if (discount.type_discount === 1) {
-      // Porcentaje
       return this.product.price_usd - (this.product.price_usd * discount.discount / 100);
     } else {
-      // Monto fijo
       return this.product.price_usd - discount.discount;
     }
   }

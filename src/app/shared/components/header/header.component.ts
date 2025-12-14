@@ -46,12 +46,12 @@ export class HeaderComponent implements OnInit {
   }
 
   goToCart() {
-    if (this.isAuthenticated) {
-      this.router.navigate(['/tabs/cart']);
-    } else {
-      this.router.navigate(['/auth/login']);
+      if (this.isAuthenticated) {
+        this.router.navigate(['/tabs/cart']);
+      } else {
+        this.router.navigate(['/auth/login']);
+      }
     }
-  }
 
   goToSearch() {
     this.router.navigate(['/search']);

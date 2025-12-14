@@ -4,6 +4,17 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { IonicModule, LoadingController, ToastController } from '@ionic/angular';
 import { AuthService } from '../../../core/services/auth.service';
+import { addIcons } from 'ionicons';
+import {
+  eyeOutline,
+  eyeOffOutline,
+  lockClosedOutline,
+  mailOutline,
+  storefrontOutline,
+  logInOutline,
+  personAddOutline,
+  alertCircle
+} from 'ionicons/icons';
 
 @Component({
   selector: 'app-login',
@@ -24,6 +35,18 @@ export class LoginPage implements OnInit {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController
   ) {
+
+    addIcons({
+    eyeOutline,
+    eyeOffOutline,
+    lockClosedOutline,
+    mailOutline,
+    storefrontOutline,
+    logInOutline,
+    personAddOutline,
+    alertCircle
+  });
+  
     this.formularioLogin = this.fb.group({
       email: ['', [
         Validators.required,

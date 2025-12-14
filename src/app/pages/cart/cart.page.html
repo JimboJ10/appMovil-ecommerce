@@ -32,7 +32,7 @@
         <!-- Información -->
         <div class="info-producto">
           <h3 class="titulo">{{ item.product.title }}</h3>
-          <p class="categoria">{{ item.product.categorie?.title }}</p>
+          <p class="categoria">{{ item.product.categorie.title }}</p>
           
           <!-- Variedad si existe -->
           <p class="variedad" *ngIf="obtenerImagenVariedad(item)">

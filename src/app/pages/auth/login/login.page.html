@@ -2,7 +2,8 @@
   <div class="contenedor-login">
     <!-- Logo y Título -->
     <div class="encabezado">
-      <ion-icon name="storefront" class="icono-logo"></ion-icon>
+      <ion-icon name="storefront-outline" class="icono-logo"></ion-icon>
+
       <h1 class="titulo">Bienvenido</h1>
       <p class="subtitulo">Inicia sesión para continuar</p>
     </div>
@@ -39,27 +40,37 @@
           Contraseña <span class="requerido">*</span>
         </ion-label>
         <ion-item 
-          lines="none" 
-          class="campo-input"
-          [class.input-invalido]="passwordInvalido">
-          <ion-icon name="lock-closed-outline" slot="start" class="icono-campo"></ion-icon>
-          <ion-input
-            [type]="mostrarPassword ? 'text' : 'password'"
-            formControlName="password"
-            placeholder="••••••••"
-            autocomplete="current-password">
-          </ion-input>
-          <ion-button 
-            fill="clear" 
-            slot="end"
-            (click)="toggleMostrarPassword()"
-            class="boton-toggle-password">
-            <ion-icon 
-              [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'"
-              slot="icon-only">
-            </ion-icon>
-          </ion-button>
-        </ion-item>
+  lines="none" 
+  class="campo-input"
+  [class.input-invalido]="passwordInvalido">
+
+  <ion-icon
+    name="lock-closed-outline"
+    slot="start"
+    class="icono-campo">
+  </ion-icon>
+
+  <ion-input
+    [type]="mostrarPassword ? 'text' : 'password'"
+    formControlName="password"
+    placeholder="••••••••"
+    autocomplete="current-password">
+  </ion-input>
+
+  <!-- 🔴 FIX REAL -->
+  <ion-buttons slot="end">
+    <ion-button
+      fill="clear"
+      type="button"
+      (click)="toggleMostrarPassword()"
+      class="boton-toggle-password">
+      <ion-icon
+        [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'">
+      </ion-icon>
+    </ion-button>
+  </ion-buttons>
+
+</ion-item>
         <div class="mensaje-error" *ngIf="passwordInvalido">
           <ion-icon name="alert-circle" class="icono-error"></ion-icon>
           <span>{{ obtenerMensajeErrorPassword() }}</span>

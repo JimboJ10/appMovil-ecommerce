@@ -24,6 +24,26 @@ export class CartService {
       );
   }
 
+  // 🔴 NUEVO: Método para obtener el carrito del usuario actual
+  async getCart(): Promise<{ carts: Cart[] }> {
+    try {
+      console.log('📡 Obteniendo carrito desde el servicio...');
+      
+      // NO necesitamos enviar user_id porque el backend lo obtiene del token
+      const response = await this.http.get<{ carts: Cart[] }>(
+        `${this.apiUrl}/cart/list`
+      ).toPromise();
+      
+      console.log('✅ Carrito obtenido:', response?.carts.length || 0, 'items');
+      
+      return response || { carts: [] };
+      
+    } catch (error) {
+      console.error('❌ Error al obtener carrito:', error);
+      return { carts: [] };
+    }
+  }
+
   addToCart(cartData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/cart/register`, cartData)
       .pipe(
@@ -61,6 +81,50 @@ export class CartService {
       total,
       items: carts.length
     };
+  }
+
+  // 🔴 NUEVO: Verificar si un producto ya está en el carrito
+  async checkProductInCart(productId: string, variedadId?: string): Promise<Cart | null> {
+    try {
+      const response = await this.getCart();
+      
+      if (!response || !response.carts) {
+        return null;
+      }
+  
+      console.log('🔍 Verificando producto en carrito...');
+      console.log('  - Producto ID:', productId);
+      console.log('  - Variedad ID:', variedadId);
+      console.log('  - Total items en carrito:', response.carts.length);
+  
+      // Buscar si el producto ya existe en el carrito
+      const existingCart = response.carts.find((cart: Cart) => {
+        const matchProduct = cart.product._id === productId;
+        
+        // Si el producto tiene variedad, validar que coincida
+        if (variedadId) {
+          const cartVariedadId = typeof cart.variedad === 'object' 
+            ? cart.variedad._id 
+            : cart.variedad;
+          
+          return matchProduct && cartVariedadId === variedadId;
+        }
+        
+        // Si no tiene variedad, solo validar el producto
+        return matchProduct && !cart.variedad;
+      });
+  
+      if (existingCart) {
+        console.log('⚠️ Producto ya existe en el carrito');
+      } else {
+        console.log('✅ Producto NO existe en el carrito');
+      }
+  
+      return existingCart || null;
+    } catch (error) {
+      console.error('❌ Error al verificar producto en carrito:', error);
+      return null;
+    }
   }
 
   clearCart() {

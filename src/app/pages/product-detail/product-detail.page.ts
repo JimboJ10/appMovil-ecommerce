@@ -9,7 +9,15 @@ import { HeaderComponent } from '../../shared/components/header/header.component
 import { RatingStarsComponent } from '../../shared/components/rating-stars/rating-stars.component';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { Product, Variedad } from '../../core/models/product.model';
-
+import { addIcons } from 'ionicons';
+import {
+  cartOutline,
+  checkmarkCircle,
+  closeCircle,
+  remove,
+  add,
+  arrowUp
+} from 'ionicons/icons';
 import { register } from 'swiper/element/bundle';
 register();
 
@@ -45,28 +53,75 @@ export class ProductDetailPage implements OnInit {
     private cartService: CartService,
     private authService: AuthService,
     private toastCtrl: ToastController
-  ) {}
+  ) {
+    addIcons({
+      cartOutline,
+      checkmarkCircle,
+      closeCircle,
+      remove,
+      add,
+      arrowUp
+    });
+  }
 
   async ngOnInit() {
     const slug = this.route.snapshot.paramMap.get('slug');
+    
+    // 🔴 AGREGAR LOGS
+    console.log('🔍 Slug recibido:', slug);
+    
     if (slug) {
       await this.cargarProducto(slug);
+    } else {
+      console.error('❌ No se recibió slug');
+      await this.mostrarToast('Error: No se encontró el producto', 'danger');
+      this.router.navigate(['/tabs/home']);
     }
   }
 
   async cargarProducto(slug: string) {
     try {
       this.cargando = true;
+      
+      console.log('📡 Cargando producto con slug:', slug);
+      
       const respuesta = await this.productService.getProductDetail(slug).toPromise();
+      
+      console.log('✅ Respuesta del servidor:', respuesta);
+      
+      if (!respuesta || !respuesta.product) {
+        throw new Error('No se recibió el producto del servidor');
+      }
+      
       this.producto = respuesta.product;
-
+  
+      // Logs de debug
+      console.log('📦 Producto cargado:');
+      console.log('  - type_inventario:', this.producto?.type_inventario);
+      console.log('  - stock:', this.producto?.stock);
+      console.log('  - variedades:', this.producto?.variedades);
+  
       // Seleccionar la primera variedad si existe
       if (this.producto?.variedades && this.producto.variedades.length > 0) {
         this.variedadSeleccionada = this.producto.variedades[0];
+        console.log('✅ Variedad seleccionada:', this.variedadSeleccionada);
+      } else {
+        console.log('ℹ️ No hay variedades para este producto');
       }
-    } catch (error) {
-      console.error('Error al cargar producto:', error);
-      await this.mostrarToast('Error al cargar el producto', 'danger');
+      
+      console.log('📊 Stock disponible:', this.obtenerStockDisponible());
+      
+    } catch (error: any) {
+      console.error('❌ Error al cargar producto:', error);
+      
+      let mensaje = 'Error al cargar el producto';
+      if (error.status === 404) {
+        mensaje = 'Producto no encontrado';
+      } else if (error.error?.message) {
+        mensaje = error.error.message;
+      }
+      
+      await this.mostrarToast(mensaje, 'danger');
       this.router.navigate(['/tabs/home']);
     } finally {
       this.cargando = false;
@@ -94,11 +149,24 @@ export class ProductDetailPage implements OnInit {
 
   obtenerStockDisponible(): number {
     if (!this.producto) return 0;
-
-    if (this.producto.type_inventario === 2 && this.variedadSeleccionada) {
-      return this.variedadSeleccionada.stock;
+  
+    // Si es inventario múltiple (type_inventario === 2)
+    if (this.producto.type_inventario === 2) {
+      // Si hay variedades disponibles
+      if (this.producto.variedades && this.producto.variedades.length > 0) {
+        // Si hay una variedad seleccionada, devolver su stock
+        if (this.variedadSeleccionada) {
+          return this.variedadSeleccionada.stock;
+        }
+        // Si NO hay variedad seleccionada, devolver 0 (debe seleccionar una)
+        return 0;
+      } else {
+        // Si NO hay variedades configuradas, usar el stock general del producto
+        return this.producto.stock;
+      }
     }
     
+    // Si es inventario único (type_inventario === 1), devolver stock del producto
     return this.producto.stock;
   }
 
@@ -140,56 +208,85 @@ export class ProductDetailPage implements OnInit {
       this.router.navigate(['/auth/login']);
       return;
     }
-
+  
+    console.log('🛒 Intentando agregar al carrito...');
+    console.log('  - Producto:', this.producto?.title);
+    console.log('  - Stock disponible:', this.obtenerStockDisponible());
+    console.log('  - Cantidad:', this.cantidad);
+    console.log('  - Variedad seleccionada:', this.variedadSeleccionada);
+  
     // Validar stock
     const stockDisponible = this.obtenerStockDisponible();
     if (stockDisponible === 0) {
       await this.mostrarToast('Producto sin stock', 'danger');
       return;
     }
-
+  
     if (this.cantidad > stockDisponible) {
       await this.mostrarToast(`Solo hay ${stockDisponible} unidades disponibles`, 'warning');
       return;
     }
-
-    // Validar selección de variedad si es necesario
-    if (this.producto?.type_inventario === 2 && !this.variedadSeleccionada) {
+  
+    // Validar variedad SOLO si es inventario múltiple Y hay variedades configuradas
+    if (this.producto?.type_inventario === 2 && 
+        this.producto.variedades && 
+        this.producto.variedades.length > 0 && 
+        !this.variedadSeleccionada) {
       await this.mostrarToast('Debes seleccionar una variedad', 'warning');
       return;
     }
-
+  
     try {
-      const precioUnitario = this.precioConDescuento;
-      const subtotal = this.producto!.price_usd * this.cantidad;
-      const total = precioUnitario * this.cantidad;
-      const descuento = subtotal - total;
-
-      const datosCarrito = {
+      // 🔴 VERIFICAR SI EL PRODUCTO YA ESTÁ EN EL CARRITO
+      const existingCart = await this.cartService.checkProductInCart(
+        this.producto!._id!,
+        this.variedadSeleccionada?._id
+      );
+  
+      if (existingCart) {
+        console.log('⚠️ Producto ya existe en el carrito');
+        
+        // 🔴 MOSTRAR MENSAJE Y NO AGREGAR
+        await this.mostrarToast(
+          'Este producto ya está en tu carrito. Ve al carrito para modificar la cantidad.',
+          'warning'
+        );
+        
+        // Opcional: Navegar al carrito
+        // this.router.navigate(['/tabs/cart']);
+        
+        return;
+      }
+  
+      // 🔴 SI NO EXISTE, AGREGAR NUEVO PRODUCTO AL CARRITO
+      const cartData: any = {
         user: user._id,
-        product: this.producto!._id,
+        product: this.producto?._id,
+        cantidad: this.cantidad,
         type_discount: this.tieneDescuento ? this.producto!.campaing_discount!.type_discount : 1,
         discount: this.tieneDescuento ? this.producto!.campaing_discount!.discount : 0,
-        cantidad: this.cantidad,
-        variedad: this.variedadSeleccionada?._id || null,
-        code_cupon: null,
         code_discount: this.tieneDescuento ? this.producto!.campaing_discount!._id : null,
-        price_unitario: precioUnitario,
-        subtotal: subtotal,
-        total: total
+        price_unitario: this.precioConDescuento,
+        subtotal: this.producto!.price_usd * this.cantidad,
+        total: this.precioConDescuento * this.cantidad
       };
-
-      await this.cartService.addToCart(datosCarrito).toPromise();
-      await this.mostrarToast('¡Producto agregado al carrito!', 'success');
+  
+      if (this.variedadSeleccionada) {
+        cartData.variedad = this.variedadSeleccionada._id;
+      }
+  
+      console.log('📤 Datos a enviar al carrito:', cartData);
+  
+      await this.cartService.addToCart(cartData).toPromise();
+      await this.mostrarToast('Producto agregado al carrito', 'success');
       
-      // Resetear cantidad
-      this.cantidad = 1;
     } catch (error: any) {
-      console.error('Error al agregar al carrito:', error);
+      console.error('❌ Error al agregar al carrito:', error);
       const mensaje = error?.error?.message_text || 'Error al agregar al carrito';
       await this.mostrarToast(mensaje, 'danger');
     }
   }
+
 
   cambiarTab(tab: string) {
     this.tabSeleccionada = tab;

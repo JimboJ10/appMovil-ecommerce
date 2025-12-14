@@ -177,3 +177,23 @@ html {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+// AL FINAL DEL ARCHIVO, AGREGA:
+
+// ============================================
+// OVERRIDE GLOBAL PARA INPUTS EN AUTH
+// ============================================
+:root {
+  // Forzar colores de input
+  --ion-input-color: #111827 !important;
+  --ion-placeholder-color: #9ca3af !important;
+}
+
+// Forzar en modo light
+:root[mode="ios"],
+:root[mode="md"] {
+  ion-input {
+    --color: #111827 !important;
+    --placeholder-color: #9ca3af !important;
+  }
+}

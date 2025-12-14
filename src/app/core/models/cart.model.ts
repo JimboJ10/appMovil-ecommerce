@@ -1,3 +1,5 @@
+import { Product, Variedad } from './product.model';
+
 export interface Cart {
   _id?: string;
   user: string;
