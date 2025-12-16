@@ -73,34 +73,52 @@ export class CartPage implements OnInit {
 
   async actualizarCantidad(item: Cart, nuevaCantidad: number) {
     if (nuevaCantidad < 1) return;
-
+  
     // Validar stock disponible
     const stockDisponible = item.product.type_inventario === 2 && item.variedad 
       ? (typeof item.variedad === 'object' ? item.variedad.stock : 0)
       : item.product.stock;
-
+  
     if (nuevaCantidad > stockDisponible) {
       await this.mostrarToast(`Solo hay ${stockDisponible} unidades disponibles`, 'warning');
       return;
     }
-
+  
     try {
       const subtotal = item.product.price_usd * nuevaCantidad;
       const total = item.price_unitario * nuevaCantidad;
-
-      const datosActualizados = {
+  
+      // 🔴 DEFINIR EL TIPO CORRECTAMENTE
+      const datosActualizados: any = {
         _id: item._id,
+        product: item.product._id,
         cantidad: nuevaCantidad,
         subtotal: subtotal,
         total: total
       };
-
+  
+      // Agregar variedad si existe
+      if (item.variedad) {
+        const variedadId = typeof item.variedad === 'object' 
+          ? item.variedad._id 
+          : item.variedad;
+        
+        if (variedadId) {
+          datosActualizados.variedad = variedadId;
+        }
+      }
+  
+      console.log('📤 Enviando actualización:', datosActualizados);
+  
       await this.cartService.updateCartItem(datosActualizados).toPromise();
       await this.cargarCarrito();
       await this.mostrarToast('Cantidad actualizada', 'success');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al actualizar cantidad:', error);
-      await this.mostrarToast('Error al actualizar cantidad', 'danger');
+      
+      // Mostrar mensaje específico si viene del backend
+      const mensaje = error?.error?.message_text || 'Error al actualizar cantidad';
+      await this.mostrarToast(mensaje, 'danger');
     }
   }
 

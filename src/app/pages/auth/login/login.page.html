@@ -40,37 +40,37 @@
           Contraseña <span class="requerido">*</span>
         </ion-label>
         <ion-item 
-  lines="none" 
-  class="campo-input"
-  [class.input-invalido]="passwordInvalido">
+          lines="none" 
+          class="campo-input"
+          [class.input-invalido]="passwordInvalido">
 
-  <ion-icon
-    name="lock-closed-outline"
-    slot="start"
-    class="icono-campo">
-  </ion-icon>
+          <ion-icon
+            name="lock-closed-outline"
+            slot="start"
+            class="icono-campo">
+          </ion-icon>
 
-  <ion-input
-    [type]="mostrarPassword ? 'text' : 'password'"
-    formControlName="password"
-    placeholder="••••••••"
-    autocomplete="current-password">
-  </ion-input>
+          <ion-input
+            [type]="mostrarPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="••••••••"
+            autocomplete="current-password">
+          </ion-input>
 
-  <!-- 🔴 FIX REAL -->
-  <ion-buttons slot="end">
-    <ion-button
-      fill="clear"
-      type="button"
-      (click)="toggleMostrarPassword()"
-      class="boton-toggle-password">
-      <ion-icon
-        [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'">
-      </ion-icon>
-    </ion-button>
-  </ion-buttons>
+          <!-- 🔴 FIX REAL -->
+          <ion-buttons slot="end">
+            <ion-button
+              fill="clear"
+              type="button"
+              (click)="toggleMostrarPassword()"
+              class="boton-toggle-password">
+              <ion-icon
+                [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'">
+              </ion-icon>
+            </ion-button>
+          </ion-buttons>
 
-</ion-item>
+        </ion-item>
         <div class="mensaje-error" *ngIf="passwordInvalido">
           <ion-icon name="alert-circle" class="icono-error"></ion-icon>
           <span>{{ obtenerMensajeErrorPassword() }}</span>
@@ -78,11 +78,11 @@
       </div>
 
       <!-- Olvidaste tu contraseña -->
-      <div class="enlace-recuperar">
+      <!-- <div class="enlace-recuperar">
         <ion-text color="primary" (click)="irARecuperarPassword()">
           ¿Olvidaste tu contraseña?
         </ion-text>
-      </div>
+      </div> -->
 
       <!-- Botón de Login -->
       <ion-button 

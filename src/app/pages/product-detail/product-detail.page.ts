@@ -294,6 +294,9 @@ export class ProductDetailPage implements OnInit {
 
   verResenas() {
     if (this.producto) {
+      console.log('🔍 Navegando a ver reseñas del producto:', this.producto._id);
+      
+      // 🔴 NAVEGAR CON _ID (NO SLUG)
       this.router.navigate(['/reviews', this.producto._id]);
     }
   }

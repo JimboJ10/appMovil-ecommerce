@@ -1,19 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, AlertController, ToastController, LoadingController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { loadScript } from '@paypal/paypal-js';
+
 import { CartService } from '../../core/services/cart.service';
 import { AddressService } from '../../core/services/address.service';
 import { OrderService } from '../../core/services/order.service';
 import { AuthService } from '../../core/services/auth.service';
-import { HeaderComponent } from '../../shared/components/header/header.component';
-import { LoadingComponent } from '../../shared/components/loading/loading.component';
+
 import { Cart, CartSummary } from '../../core/models/cart.model';
 import { Address } from '../../core/models/address.model';
 
-// PayPal
-import { loadScript } from '@paypal/paypal-js';
+import { HeaderComponent } from '../../shared/components/header/header.component';
+import { LoadingComponent } from '../../shared/components/loading/loading.component';
+
+import { AlertController, ToastController, LoadingController } from '@ionic/angular';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -23,7 +26,7 @@ import { environment } from '../../../environments/environment';
   standalone: true,
   imports: [CommonModule, IonicModule, FormsModule, HeaderComponent, LoadingComponent]
 })
-export class CheckoutPage implements OnInit {
+export class CheckoutPage implements OnInit, AfterViewInit {
   cargando: boolean = true;
   procesandoPago: boolean = false;
 
@@ -54,7 +57,15 @@ export class CheckoutPage implements OnInit {
 
   async ngOnInit() {
     await this.cargarDatos();
-    await this.initPayPal();
+  }
+
+  // 🔴 NUEVO: Inicializar PayPal después de que la vista se cargue
+  ngAfterViewInit() {
+    setTimeout(() => {
+      if (this.direccionSeleccionada) {
+        this.initPayPal();
+      }
+    }, 500);
   }
 
   async cargarDatos() {
@@ -96,44 +107,83 @@ export class CheckoutPage implements OnInit {
 
   async initPayPal() {
     try {
+      console.log('🔄 Iniciando PayPal...');
+      console.log('📦 Total a pagar:', this.resumen.total);
+      console.log('🔑 Client ID:', environment.paypalClientId);
+
       const paypal = await loadScript({
         clientId: environment.paypalClientId,
         currency: 'USD'
       });
 
+      console.log('✅ Script de PayPal cargado:', paypal);
+
       if (paypal && paypal.Buttons) {
         this.paypalLoaded = true;
-        this.renderPayPalButton();
+        console.log('✅ PayPal Buttons disponible');
+        
+        // Esperar un tick para asegurar que el DOM está listo
+        setTimeout(() => {
+          this.renderPayPalButton();
+        }, 100);
+      } else {
+        console.error('❌ PayPal Buttons no está disponible');
+        await this.mostrarToast('Error al cargar PayPal', 'danger');
       }
     } catch (error) {
-      console.error('Error al cargar PayPal:', error);
-      await this.mostrarToast('Error al cargar PayPal', 'danger');
+      console.error('❌ Error al cargar PayPal:', error);
+      await this.mostrarToast('Error al cargar PayPal: ' + error, 'danger');
     }
   }
 
   renderPayPalButton() {
     const paypalContainer = document.getElementById('paypal-button-container');
-    if (!paypalContainer) return;
+    
+    console.log('🎨 Renderizando botón de PayPal...');
+    console.log('📦 Contenedor encontrado:', paypalContainer);
 
-    (window as any).paypal.Buttons({
-      createOrder: (data: any, actions: any) => {
-        return actions.order.create({
-          purchase_units: [{
-            amount: {
-              value: this.resumen.total.toFixed(2)
-            }
-          }]
-        });
-      },
-      onApprove: async (data: any, actions: any) => {
-        const order = await actions.order.capture();
-        await this.procesarPago(order);
-      },
-      onError: (err: any) => {
-        console.error('Error en PayPal:', err);
-        this.mostrarToast('Error al procesar el pago con PayPal', 'danger');
-      }
-    }).render('#paypal-button-container');
+    if (!paypalContainer) {
+      console.error('❌ Contenedor #paypal-button-container no encontrado');
+      return;
+    }
+
+    // Limpiar contenedor antes de renderizar
+    paypalContainer.innerHTML = '';
+
+    try {
+      (window as any).paypal.Buttons({
+        createOrder: (data: any, actions: any) => {
+          console.log('💰 Creando orden de PayPal por:', this.resumen.total);
+          
+          return actions.order.create({
+            purchase_units: [{
+              amount: {
+                value: this.resumen.total.toFixed(2)
+              }
+            }]
+          });
+        },
+        onApprove: async (data: any, actions: any) => {
+          console.log('✅ Pago aprobado, capturando orden...');
+          const order = await actions.order.capture();
+          console.log('✅ Orden capturada:', order);
+          await this.procesarPago(order);
+        },
+        onError: (err: any) => {
+          console.error('❌ Error en PayPal:', err);
+          this.mostrarToast('Error al procesar el pago con PayPal', 'danger');
+        },
+        onCancel: (data: any) => {
+          console.log('⚠️ Pago cancelado por el usuario');
+          this.mostrarToast('Pago cancelado', 'warning');
+        }
+      }).render('#paypal-button-container');
+
+      console.log('✅ Botón de PayPal renderizado correctamente');
+    } catch (error) {
+      console.error('❌ Error al renderizar botón de PayPal:', error);
+      this.mostrarToast('Error al renderizar botón de PayPal', 'danger');
+    }
   }
 
   async procesarPago(paypalOrder: any) {
@@ -177,6 +227,8 @@ export class CheckoutPage implements OnInit {
         }
       };
 
+      console.log('📤 Enviando orden al servidor:', datosOrden);
+
       await this.orderService.createOrder(datosOrden).toPromise();
 
       await loading.dismiss();
@@ -190,7 +242,7 @@ export class CheckoutPage implements OnInit {
 
     } catch (error: any) {
       await loading.dismiss();
-      console.error('Error al procesar orden:', error);
+      console.error('❌ Error al procesar orden:', error);
       const mensaje = error?.error?.message || 'Error al procesar la orden';
       await this.mostrarToast(mensaje, 'danger');
     } finally {
@@ -200,6 +252,18 @@ export class CheckoutPage implements OnInit {
 
   seleccionarDireccion(direccion: Address) {
     this.direccionSeleccionada = direccion;
+    
+    // Reinicializar PayPal si ya estaba cargado
+    if (this.paypalLoaded) {
+      console.log('🔄 Reinicializando PayPal con nueva dirección...');
+      const container = document.getElementById('paypal-button-container');
+      if (container) {
+        container.innerHTML = '';
+        this.renderPayPalButton();
+      }
+    } else {
+      this.initPayPal();
+    }
   }
 
   async agregarNuevaDireccion() {

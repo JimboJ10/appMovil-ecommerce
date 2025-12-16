@@ -124,4 +124,12 @@ export class AuthService {
     this.currentUserSubject.next(user);
     await this.storage.set('user', user);
   }
+
+  changePassword(userId: string, currentPassword: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/users/change-password`, {
+      user_id: userId,
+      current_password: currentPassword,
+      new_password: newPassword
+    });
+  }
 }

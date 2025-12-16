@@ -33,17 +33,26 @@ export class OrdersPage implements OnInit {
   async cargarOrdenes() {
     try {
       this.cargando = true;
-      const user = await this.authService.getCurrentUser();
       
-      if (!user) {
-        this.router.navigate(['/auth/login']);
-        return;
-      }
+      console.log('📡 Cargando órdenes...');
 
-      const respuesta = await this.orderService.getMyOrders(user._id!).toPromise();
-      this.ordenes = respuesta.sales || [];
-    } catch (error) {
-      console.error('Error al cargar órdenes:', error);
+      // No necesitamos pasar user_id, el backend lo obtiene del token
+      const respuesta = await this.orderService.getMyOrders().toPromise();
+      
+      console.log('✅ Respuesta del servidor:', respuesta);
+      
+      this.ordenes = respuesta?.sales || [];
+      
+      console.log(`📦 Total de órdenes: ${this.ordenes.length}`);
+      
+    } catch (error: any) {
+      console.error('❌ Error al cargar órdenes:', error);
+      
+      // Verificar si el error es de autenticación
+      if (error.status === 401 || error.status === 403) {
+        console.log('⚠️ Token inválido, redirigiendo a login...');
+        this.router.navigate(['/auth/login']);
+      }
     } finally {
       this.cargando = false;
     }
@@ -69,6 +78,7 @@ export class OrdersPage implements OnInit {
 
   obtenerEstadoOrden(orden: any): string {
     // Lógica para determinar el estado
+    // Por ahora todas están completadas
     return 'Completado';
   }
 

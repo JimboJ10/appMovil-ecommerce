@@ -24,6 +24,7 @@
           [class.input-invalido]="campoEsInvalido('name')">
           <ion-icon name="person-outline" slot="start" class="icono-campo"></ion-icon>
           <ion-input
+            id="register-name"
             type="text"
             formControlName="name"
             placeholder="Juan"
@@ -47,6 +48,7 @@
           [class.input-invalido]="campoEsInvalido('surname')">
           <ion-icon name="person-outline" slot="start" class="icono-campo"></ion-icon>
           <ion-input
+            id="register-surname"
             type="text"
             formControlName="surname"
             placeholder="Pérez"
@@ -70,6 +72,7 @@
           [class.input-invalido]="campoEsInvalido('email')">
           <ion-icon name="mail-outline" slot="start" class="icono-campo"></ion-icon>
           <ion-input
+            id="register-email"
             type="email"
             formControlName="email"
             placeholder="correo@ejemplo.com"
@@ -94,6 +97,7 @@
           [class.input-invalido]="campoEsInvalido('phone')">
           <ion-icon name="call-outline" slot="start" class="icono-campo"></ion-icon>
           <ion-input
+            id="register-phone"
             type="tel"
             formControlName="phone"
             placeholder="987654321"
@@ -118,6 +122,7 @@
           [class.input-invalido]="campoEsInvalido('password')">
           <ion-icon name="lock-closed-outline" slot="start" class="icono-campo"></ion-icon>
           <ion-input
+            id="register-password"
             [type]="mostrarPassword ? 'text' : 'password'"
             formControlName="password"
             placeholder="••••••••"
@@ -137,20 +142,20 @@
         <!-- Requisitos de contraseña -->
         <div class="requisitos-password" *ngIf="formularioRegistro.get('password')?.touched">
           <p class="titulo-requisitos">La contraseña debe contener:</p>
-          <div class="requisito" [class.cumplido]="obtenerRequisitosPassword()?.tieneMayuscula">
-            <ion-icon [name]="obtenerRequisitosPassword()?.tieneMayuscula ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+          <div class="requisito" [class.cumplido]="obtenerRequisitosPassword().tieneMayuscula">
+            <ion-icon [name]="obtenerRequisitosPassword().tieneMayuscula ? 'checkmark-circle' : 'close-circle'"></ion-icon>
             <span>Una letra mayúscula</span>
           </div>
-          <div class="requisito" [class.cumplido]="obtenerRequisitosPassword()?.tieneMinuscula">
-            <ion-icon [name]="obtenerRequisitosPassword()?.tieneMinuscula ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+          <div class="requisito" [class.cumplido]="obtenerRequisitosPassword().tieneMinuscula">
+            <ion-icon [name]="obtenerRequisitosPassword().tieneMinuscula ? 'checkmark-circle' : 'close-circle'"></ion-icon>
             <span>Una letra minúscula</span>
           </div>
-          <div class="requisito" [class.cumplido]="obtenerRequisitosPassword()?.tieneNumero">
-            <ion-icon [name]="obtenerRequisitosPassword()?.tieneNumero ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+          <div class="requisito" [class.cumplido]="obtenerRequisitosPassword().tieneNumero">
+            <ion-icon [name]="obtenerRequisitosPassword().tieneNumero ? 'checkmark-circle' : 'close-circle'"></ion-icon>
             <span>Un número</span>
           </div>
-          <div class="requisito" [class.cumplido]="obtenerRequisitosPassword()?.tieneCaracterEspecial">
-            <ion-icon [name]="obtenerRequisitosPassword()?.tieneCaracterEspecial ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+          <div class="requisito" [class.cumplido]="obtenerRequisitosPassword().tieneCaracterEspecial">
+            <ion-icon [name]="obtenerRequisitosPassword().tieneCaracterEspecial ? 'checkmark-circle' : 'close-circle'"></ion-icon>
             <span>Un símbolo (!@#$%...)</span>
           </div>
           <div class="requisito" [class.cumplido]="formularioRegistro.get('password')?.value?.length >= 8">
@@ -171,6 +176,7 @@
           [class.input-invalido]="campoEsInvalido('confirmarPassword')">
           <ion-icon name="lock-closed-outline" slot="start" class="icono-campo"></ion-icon>
           <ion-input
+            id="register-confirm-password"
             [type]="mostrarConfirmarPassword ? 'text' : 'password'"
             formControlName="confirmarPassword"
             placeholder="••••••••"
@@ -194,7 +200,7 @@
 
       <!-- Términos y Condiciones -->
       <div class="campo-checkbox">
-        <ion-checkbox formControlName="aceptarTerminos"></ion-checkbox>
+        <ion-checkbox id="register-terms" formControlName="aceptarTerminos"></ion-checkbox>
         <ion-label class="texto-terminos">
           Acepto los <span class="enlace">Términos y Condiciones</span> y la 
           <span class="enlace">Política de Privacidad</span>

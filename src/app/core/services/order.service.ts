@@ -15,8 +15,12 @@ export class OrderService {
     return this.http.post(`${this.apiUrl}/sale/register`, orderData);
   }
 
-  getMyOrders(userId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/home/profile_client`, { user_id: userId });
+  getMyOrders(userId?: string): Observable<any> {
+    const url = userId 
+      ? `${this.apiUrl}/sale/list?user_id=${userId}`
+      : `${this.apiUrl}/sale/list`;
+    
+    return this.http.get(url);
   }
 
   getOrderDetail(orderId: string): Observable<any> {

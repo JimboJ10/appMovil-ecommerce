@@ -14,9 +14,6 @@
           <span>{{ obtenerIniciales() }}</span>
         </div>
         <img [src]="usuario?.avatar" [alt]="usuario?.name" class="avatar-img" *ngIf="usuario?.avatar" />
-        <ion-button class="boton-cambiar-foto" fill="clear" size="small">
-          <ion-icon name="camera" slot="icon-only"></ion-icon>
-        </ion-button>
       </div>
     </div>
 
@@ -37,11 +34,11 @@
           <ion-input
             formControlName="name"
             placeholder="Ingresa tu nombre"
-            [class.input-invalido]="campoInvalido('name')">
+            [class.input-invalido]="campoInvalido('name', 'perfil')">
           </ion-input>
-          <div class="mensaje-error" *ngIf="campoInvalido('name')">
+          <div class="mensaje-error" *ngIf="campoInvalido('name', 'perfil')">
             <ion-icon name="alert-circle"></ion-icon>
-            <span>El nombre es requerido</span>
+            <span>{{ obtenerMensajeError('name', 'perfil') }}</span>
           </div>
         </div>
 
@@ -51,11 +48,11 @@
           <ion-input
             formControlName="surname"
             placeholder="Ingresa tu apellido"
-            [class.input-invalido]="campoInvalido('surname')">
+            [class.input-invalido]="campoInvalido('surname', 'perfil')">
           </ion-input>
-          <div class="mensaje-error" *ngIf="campoInvalido('surname')">
+          <div class="mensaje-error" *ngIf="campoInvalido('surname', 'perfil')">
             <ion-icon name="alert-circle"></ion-icon>
-            <span>El apellido es requerido</span>
+            <span>{{ obtenerMensajeError('surname', 'perfil') }}</span>
           </div>
         </div>
 
@@ -66,11 +63,11 @@
             formControlName="email"
             type="email"
             placeholder="correo@ejemplo.com"
-            [class.input-invalido]="campoInvalido('email')">
+            [class.input-invalido]="campoInvalido('email', 'perfil')">
           </ion-input>
-          <div class="mensaje-error" *ngIf="campoInvalido('email')">
+          <div class="mensaje-error" *ngIf="campoInvalido('email', 'perfil')">
             <ion-icon name="alert-circle"></ion-icon>
-            <span>El email debe ser válido</span>
+            <span>{{ obtenerMensajeError('email', 'perfil') }}</span>
           </div>
         </div>
 
@@ -80,13 +77,8 @@
           <ion-input
             formControlName="phone"
             type="tel"
-            placeholder="Ingresa tu teléfono"
-            [class.input-invalido]="campoInvalido('phone')">
+            placeholder="Ingresa tu teléfono">
           </ion-input>
-          <div class="mensaje-error" *ngIf="campoInvalido('phone')">
-            <ion-icon name="alert-circle"></ion-icon>
-            <span>El teléfono debe tener entre 9 y 15 dígitos</span>
-          </div>
         </div>
 
         <!-- Fecha de Nacimiento -->
@@ -110,7 +102,7 @@
         <div class="info-item">
           <ion-icon name="person-outline"></ion-icon>
           <div>
-            <span class="etiqueta">Nombre Completo</span>
+            <span class="etiqueta">Nombre completo</span>
             <span class="valor">{{ usuario?.name }} {{ usuario?.surname }}</span>
           </div>
         </div>
@@ -134,11 +126,154 @@
         <div class="info-item" *ngIf="usuario?.birthday">
           <ion-icon name="calendar-outline"></ion-icon>
           <div>
-            <span class="etiqueta">Fecha de Nacimiento</span>
+            <span class="etiqueta">Fecha de nacimiento</span>
             <span class="valor">{{ usuario?.birthday | date:'dd/MM/yyyy' }}</span>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- 🔴 NUEVA SECCIÓN: Seguridad -->
+    <div class="seccion-seguridad">
+      <div class="encabezado-seccion">
+        <h2>Seguridad</h2>
+      </div>
+
+      <!-- Botón para mostrar formulario de cambio de contraseña -->
+      <div class="lista-opciones" *ngIf="!mostrarCambioPassword">
+        <div class="opcion-item" (click)="toggleCambioPassword()">
+          <div class="opcion-info">
+            <ion-icon name="key-outline"></ion-icon>
+            <span>Cambiar Contraseña</span>
+          </div>
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+      </div>
+
+      <!-- 🔴 FORMULARIO DE CAMBIO DE CONTRASEÑA -->
+      <form [formGroup]="formularioPassword" *ngIf="mostrarCambioPassword">
+        
+        <!-- Contraseña Actual -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Contraseña Actual *</ion-label>
+          <ion-item 
+            lines="none" 
+            class="campo-input"
+            [class.input-invalido]="campoInvalido('currentPassword', 'password')">
+            <ion-icon name="lock-closed-outline" slot="start" class="icono-campo"></ion-icon>
+            <ion-input
+              id="current-password"
+              [type]="mostrarPasswordActual ? 'text' : 'password'"
+              formControlName="currentPassword"
+              placeholder="Ingresa tu contraseña actual">
+            </ion-input>
+            <ion-button 
+              slot="end" 
+              fill="clear" 
+              (click)="mostrarPasswordActual = !mostrarPasswordActual">
+              <ion-icon [name]="mostrarPasswordActual ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
+          </ion-item>
+          <div class="mensaje-error" *ngIf="campoInvalido('currentPassword', 'password')">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>{{ obtenerMensajeError('currentPassword', 'password') }}</span>
+          </div>
+        </div>
+
+        <!-- Nueva Contraseña -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Nueva Contraseña *</ion-label>
+          <ion-item
+            lines="none" 
+            class="campo-input"
+            [class.input-invalido]="campoInvalido('newPassword', 'password')">
+            <ion-icon name="lock-closed-outline" slot="start" class="icono-campo"></ion-icon>
+            <ion-input
+              id="new-password"
+              [type]="mostrarPasswordNuevo ? 'text' : 'password'"
+              formControlName="newPassword"
+              placeholder="Ingresa tu nueva contraseña">
+            </ion-input>
+            <ion-button 
+              slot="end" 
+              fill="clear" 
+              (click)="mostrarPasswordNuevo = !mostrarPasswordNuevo">
+              <ion-icon [name]="mostrarPasswordNuevo ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
+          </ion-item>
+
+          <!-- Requisitos de contraseña -->
+          <div class="requisitos-password" *ngIf="formularioPassword.get('newPassword')?.touched">
+            <p class="titulo-requisitos">La contraseña debe contener:</p>
+            <div class="requisito" [class.cumplido]="obtenerRequisitosPassword().tieneMayuscula">
+              <ion-icon [name]="obtenerRequisitosPassword().tieneMayuscula ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+              <span>Una letra mayúscula</span>
+            </div>
+            <div class="requisito" [class.cumplido]="obtenerRequisitosPassword().tieneMinuscula">
+              <ion-icon [name]="obtenerRequisitosPassword().tieneMinuscula ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+              <span>Una letra minúscula</span>
+            </div>
+            <div class="requisito" [class.cumplido]="obtenerRequisitosPassword().tieneNumero">
+              <ion-icon [name]="obtenerRequisitosPassword().tieneNumero ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+              <span>Un número</span>
+            </div>
+            <div class="requisito" [class.cumplido]="obtenerRequisitosPassword().tieneCaracterEspecial">
+              <ion-icon [name]="obtenerRequisitosPassword().tieneCaracterEspecial ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+              <span>Un carácter especial (!@#$...)</span>
+            </div>
+            <div class="requisito" [class.cumplido]="formularioPassword.get('newPassword')?.value?.length >= 8">
+              <ion-icon [name]="formularioPassword.get('newPassword')?.value?.length >= 8 ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+              <span>Mínimo 8 caracteres</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirmar Nueva Contraseña -->
+        <div class="campo-formulario">
+          <ion-label position="stacked">Confirmar Nueva Contraseña *</ion-label>
+          <ion-item 
+            lines="none" 
+            class="campo-input"
+            [class.input-invalido]="campoInvalido('confirmPassword', 'password')">
+            <ion-icon name="lock-closed-outline" slot="start" class="icono-campo"></ion-icon>
+            <ion-input
+              id="confirm-password"
+              [type]="mostrarPasswordConfirmar ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              placeholder="Confirma tu nueva contraseña">
+            </ion-input>
+            <ion-button 
+              slot="end" 
+              fill="clear" 
+              (click)="mostrarPasswordConfirmar = !mostrarPasswordConfirmar">
+              <ion-icon [name]="mostrarPasswordConfirmar ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
+          </ion-item>
+          <div class="mensaje-error" *ngIf="campoInvalido('confirmPassword', 'password')">
+            <ion-icon name="alert-circle"></ion-icon>
+            <span>{{ obtenerMensajeError('confirmPassword', 'password') }}</span>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="botones-password">
+          <ion-button 
+            expand="block" 
+            class="boton-guardar" 
+            (click)="cambiarPassword()"
+            [disabled]="formularioPassword.invalid">
+            <ion-icon name="key-outline" slot="start"></ion-icon>
+            Cambiar Contraseña
+          </ion-button>
+
+          <ion-button 
+            expand="block" 
+            fill="outline" 
+            (click)="toggleCambioPassword()">
+            Cancelar
+          </ion-button>
+        </div>
+      </form>
     </div>
 
     <!-- Opciones Adicionales -->
@@ -149,15 +284,15 @@
         <div class="opcion-item">
           <div class="opcion-info">
             <ion-icon name="notifications-outline"></ion-icon>
-            <span>Notificaciones Push</span>
+            <span>Notificaciones</span>
           </div>
           <ion-toggle></ion-toggle>
         </div>
 
         <div class="opcion-item">
           <div class="opcion-info">
-            <ion-icon name="mail-unread-outline"></ion-icon>
-            <span>Correos Promocionales</span>
+            <ion-icon name="mail-outline"></ion-icon>
+            <span>Recibir ofertas por email</span>
           </div>
           <ion-toggle></ion-toggle>
         </div>
@@ -166,14 +301,6 @@
           <div class="opcion-info">
             <ion-icon name="location-outline"></ion-icon>
             <span>Mis Direcciones</span>
-          </div>
-          <ion-icon name="chevron-forward-outline"></ion-icon>
-        </div>
-
-        <div class="opcion-item">
-          <div class="opcion-info">
-            <ion-icon name="lock-closed-outline"></ion-icon>
-            <span>Cambiar Contraseña</span>
           </div>
           <ion-icon name="chevron-forward-outline"></ion-icon>
         </div>

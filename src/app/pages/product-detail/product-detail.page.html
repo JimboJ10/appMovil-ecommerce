@@ -54,9 +54,17 @@
           size="medium">
         </app-rating-stars>
         <span class="rating-texto">({{ producto.count_review }} reseñas)</span>
+        <!-- 🔴 SOLO VER RESEÑAS, NO OPINAR -->
         <ion-button fill="clear" size="small" (click)="verResenas()">
           Ver todas
         </ion-button>
+      </div>
+
+      <div class="seccion-rating" *ngIf="!producto.count_review || producto.count_review === 0">
+        <p class="sin-resenas-texto">
+          <ion-icon name="star-outline"></ion-icon>
+          Este producto aún no tiene reseñas
+        </p>
       </div>
 
       <!-- Precio -->

@@ -120,13 +120,23 @@
         </h2>
       </div>
 
-      <!-- PayPal Button Container -->
-      <div id="paypal-button-container" *ngIf="paypalLoaded && direccionSeleccionada"></div>
-
       <!-- Mensaje si no hay dirección seleccionada -->
       <div class="mensaje-advertencia" *ngIf="!direccionSeleccionada">
         <ion-icon name="alert-circle"></ion-icon>
         <p>Por favor selecciona una dirección de envío para continuar</p>
+      </div>
+
+      <!-- Loading mientras carga PayPal -->
+      <div *ngIf="direccionSeleccionada && !paypalLoaded" class="loading-paypal">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Cargando PayPal...</p>
+      </div>
+
+      <!-- PayPal Button Container -->
+      <div 
+        id="paypal-button-container" 
+        *ngIf="direccionSeleccionada && paypalLoaded"
+        style="min-height: 150px;">
       </div>
     </div>
   </div>

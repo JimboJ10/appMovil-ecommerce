@@ -168,17 +168,28 @@ export class RegisterPage implements OnInit {
     return !!(campo && campo.invalid && campo.touched);
   }
 
+  // 🔴 OBTENER REQUISITOS DE PASSWORD - VERSIÓN CORREGIDA
   obtenerRequisitosPassword() {
-    const password = this.formularioRegistro.get('password');
-    const errores = password?.errors?.['passwordDebil'];
-
-    if (!errores) return null;
-
+    const passwordControl = this.formularioRegistro.get('password');
+    
+    // Si no hay control o valor, devolver todo en false
+    if (!passwordControl || !passwordControl.value) {
+      return {
+        tieneMayuscula: false,
+        tieneMinuscula: false,
+        tieneNumero: false,
+        tieneCaracterEspecial: false
+      };
+    }
+  
+    const valor = passwordControl.value;
+    
+    // 🔴 CALCULAR DIRECTAMENTE CADA REQUISITO
     return {
-      tieneMayuscula: errores.tieneMayuscula,
-      tieneMinuscula: errores.tieneMinuscula,
-      tieneNumero: errores.tieneNumero,
-      tieneCaracterEspecial: errores.tieneCaracterEspecial
+      tieneMayuscula: /[A-Z]/.test(valor),
+      tieneMinuscula: /[a-z]/.test(valor),
+      tieneNumero: /[0-9]/.test(valor),
+      tieneCaracterEspecial: /[!@#$%^&*(),.?":{}|<>]/.test(valor)
     };
   }
 

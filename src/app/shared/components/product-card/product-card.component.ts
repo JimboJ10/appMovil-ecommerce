@@ -18,15 +18,18 @@ export class ProductCardComponent {
   constructor(private router: Router) {}
 
   viewProduct() {
-    // 🔴 AGREGAR LOG PARA DEBUG
-    console.log('🔍 Navegando a producto:', this.product.slug);
+    console.log('🔍 Navegando a producto:', this.product);
     
-    if (!this.product.slug) {
-      console.error('❌ El producto no tiene slug:', this.product);
+    // 🔴 USAR SLUG SI EXISTE, SINO USAR _ID
+    const identifier = this.product.slug || this.product._id;
+    
+    if (!identifier) {
+      console.error('❌ El producto no tiene ni slug ni _id:', this.product);
       return;
     }
     
-    this.router.navigate(['/product-detail', this.product.slug]);
+    console.log('✅ Navegando con:', identifier);
+    this.router.navigate(['/product-detail', identifier]);
   }
 
   get hasDiscount(): boolean {

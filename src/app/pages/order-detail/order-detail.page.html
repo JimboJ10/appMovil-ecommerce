@@ -84,7 +84,10 @@
       <div class="lista-productos">
         <div *ngFor="let detalle of detallesOrden" class="producto-item">
           <div class="imagen-producto">
-            <img [src]="detalle.product.imagen" [alt]="detalle.product.title" />
+            <img 
+              [src]="detalle.product.imagen" 
+              [alt]="detalle.product.title"
+              (error)="onImageError($event)" />
           </div>
 
           <div class="info-producto">
@@ -94,6 +97,16 @@
             </p>
             <p class="cantidad">Cantidad: {{ detalle.cantidad }}</p>
             <p class="precio">${{ detalle.price_unitario | number:'1.2-2' }}</p>
+            
+            <!-- 🔴 BOTÓN PARA DEJAR RESEÑA -->
+            <ion-button 
+              size="small" 
+              fill="outline" 
+              color="primary"
+              (click)="irAResenas(detalle.product)">
+              <ion-icon name="star-outline" slot="start"></ion-icon>
+              Calificar producto
+            </ion-button>
           </div>
 
           <div class="total-producto">

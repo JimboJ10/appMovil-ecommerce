@@ -1,5 +1,5 @@
 <app-header 
-  [title]="'Reseñas'"
+  [title]="producto?.title || 'Reseñas'"
   [showBackButton]="true"
   [showCartButton]="false">
 </app-header>
@@ -11,11 +11,11 @@
   <!-- Contenido -->
   <div *ngIf="!cargando" class="contenedor-resenas">
     
-    <!-- Botón agregar reseña -->
-    <div class="boton-agregar" *ngIf="!mostrarFormulario && saleDetailId">
-      <ion-button expand="block" (click)="mostrarFormulario = true">
-        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-        Escribir Reseña
+    <!-- Botón agregar/editar reseña -->
+    <div class="boton-agregar" *ngIf="(puedeResenar || yaReseno) && !mostrarFormulario">
+      <ion-button expand="block" (click)="abrirFormulario()">
+        <ion-icon [name]="yaReseno ? 'create-outline' : 'add-circle-outline'" slot="start"></ion-icon>
+        {{ yaReseno ? 'Editar Mi Reseña' : 'Escribir Reseña' }}
       </ion-button>
     </div>
 
@@ -46,6 +46,7 @@
 
       <div class="botones-formulario">
         <ion-button expand="block" (click)="guardarResena()">
+          <ion-icon name="save-outline" slot="start"></ion-icon>
           {{ editando ? 'Actualizar' : 'Publicar' }} Reseña
         </ion-button>
         <ion-button expand="block" fill="outline" (click)="cancelarFormulario()">
@@ -62,6 +63,9 @@
       <div class="sin-resenas" *ngIf="resenas.length === 0">
         <ion-icon name="star-outline"></ion-icon>
         <p>Este producto aún no tiene reseñas</p>
+        <p *ngIf="puedeResenar && !mostrarFormulario" class="subtexto">
+          ¡Sé el primero en dejar tu opinión!
+        </p>
       </div>
 
       <!-- Reseñas -->
@@ -69,16 +73,13 @@
         <div class="resena-header">
           <div class="usuario-info">
             <div class="avatar">
-              <span>{{ resena.user.name.charAt(0) }}{{ resena.user.surname.charAt(0) }}</span>
+              <span>{{ obtenerIniciales(resena.user.name, resena.user.surname) }}</span>
             </div>
             <div>
               <h4>{{ resena.user.name }} {{ resena.user.surname }}</h4>
-              <p class="fecha">{{ resena.createdAt | date:'dd/MM/yyyy' }}</p>
+              <p class="fecha">{{ formatearFecha(resena.createdAt) }}</p>
             </div>
           </div>
-          <ion-button fill="clear" *ngIf="resena.canEdit" (click)="editarResena(resena)">
-            <ion-icon name="create-outline" slot="icon-only"></ion-icon>
-          </ion-button>
         </div>
 
         <div class="resena-body">

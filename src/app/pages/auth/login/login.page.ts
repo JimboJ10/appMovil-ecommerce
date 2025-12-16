@@ -151,7 +151,7 @@ export class LoginPage implements OnInit {
     this.router.navigate(['/auth/register']);
   }
 
-  irARecuperarPassword() {
-    this.router.navigate(['/auth/forgot-password']);
-  }
+  // irARecuperarPassword() {
+  //   this.router.navigate(['/auth/forgot-password']);
+  // }
 }
