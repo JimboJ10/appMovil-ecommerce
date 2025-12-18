@@ -53,17 +53,13 @@ export class ReviewsPage implements OnInit {
   async cargarProductoYResenas(productoId: string) {
     try {
       this.cargando = true;
-  
-      console.log('📡 Cargando información del producto:', productoId);
-  
-      // 🔴 NO NECESITAMOS CARGAR TODO EL PRODUCTO, SOLO SU ID Y TÍTULO
       // Primero verificar si podemos reseñar
       await this.verificarPuedeResenar(productoId);
       
       // Cargar reseñas del producto
       await this.cargarResenas(productoId);
   
-      // 🔴 OBTENER INFORMACIÓN BÁSICA DEL PRODUCTO DESDE LAS RESEÑAS
+      // OBTENER INFORMACIÓN BÁSICA DEL PRODUCTO DESDE LAS RESEÑAS
       if (this.resenas.length > 0 && this.resenas[0].product) {
         this.producto = this.resenas[0].product;
       } else {
@@ -71,8 +67,6 @@ export class ReviewsPage implements OnInit {
         const respuestaProducto = await this.productService.getProductDetail(productoId).toPromise();
         this.producto = respuestaProducto.product;
       }
-  
-      console.log('📦 Producto cargado:', this.producto?.title);
   
     } catch (error) {
       console.error('Error al cargar producto y reseñas:', error);
@@ -87,7 +81,6 @@ export class ReviewsPage implements OnInit {
       const respuesta = await this.reviewService.getProductReviews(productoId).toPromise();
       this.resenas = respuesta.reviews || [];
       
-      console.log(`📋 Reseñas cargadas: ${this.resenas.length}`);
     } catch (error) {
       console.error('Error al cargar reseñas:', error);
       this.resenas = [];
@@ -104,8 +97,6 @@ export class ReviewsPage implements OnInit {
       }
 
       const respuesta = await this.reviewService.checkCanReview(user._id!, productoId).toPromise();
-      
-      console.log('🔍 Verificación de reseña:', respuesta);
 
       this.puedeResenar = respuesta.can_review;
       this.yaReseno = respuesta.has_review;

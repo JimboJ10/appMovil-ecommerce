@@ -95,7 +95,7 @@
     <div class="seccion-productos" *ngIf="mejoresProductos.length > 0">
       <div class="encabezado-seccion">
         <h2>Los Más Vendidos</h2>
-        <ion-button fill="clear" size="small">
+        <ion-button fill="clear" size="small" (click)="verTodo()">
           Ver todo
           <ion-icon name="arrow-forward" slot="end"></ion-icon>
         </ion-button>
@@ -122,7 +122,7 @@
     <div class="seccion-productos" *ngIf="nuestrosProductos.length > 0">
       <div class="encabezado-seccion">
         <h2>Nuevos Productos</h2>
-        <ion-button fill="clear" size="small">
+        <ion-button fill="clear" size="small" (click)="verTodo()">
           Ver todo
           <ion-icon name="arrow-forward" slot="end"></ion-icon>
         </ion-button>
@@ -137,10 +137,10 @@
     </div>
 
     <!-- Botón volver arriba -->
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
       <ion-fab-button size="small" (click)="volverArriba()">
         <ion-icon name="arrow-up"></ion-icon>
       </ion-fab-button>
-    </ion-fab>
+    </ion-fab> -->
   </div>
 </ion-content>

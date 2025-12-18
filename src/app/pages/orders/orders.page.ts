@@ -33,24 +33,15 @@ export class OrdersPage implements OnInit {
   async cargarOrdenes() {
     try {
       this.cargando = true;
-      
-      console.log('📡 Cargando órdenes...');
 
-      // No necesitamos pasar user_id, el backend lo obtiene del token
       const respuesta = await this.orderService.getMyOrders().toPromise();
       
-      console.log('✅ Respuesta del servidor:', respuesta);
-      
       this.ordenes = respuesta?.sales || [];
-      
-      console.log(`📦 Total de órdenes: ${this.ordenes.length}`);
       
     } catch (error: any) {
       console.error('❌ Error al cargar órdenes:', error);
       
-      // Verificar si el error es de autenticación
       if (error.status === 401 || error.status === 403) {
-        console.log('⚠️ Token inválido, redirigiendo a login...');
         this.router.navigate(['/auth/login']);
       }
     } finally {
@@ -59,7 +50,6 @@ export class OrdersPage implements OnInit {
   }
 
   get ordenesFiltradas() {
-    // Aquí podrías filtrar por estado si lo implementas
     return this.ordenes;
   }
 
@@ -77,7 +67,6 @@ export class OrdersPage implements OnInit {
   }
 
   obtenerEstadoOrden(orden: any): string {
-    // Lógica para determinar el estado
     // Por ahora todas están completadas
     return 'Completado';
   }

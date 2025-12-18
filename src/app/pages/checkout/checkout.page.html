@@ -69,12 +69,45 @@
         <div *ngFor="let item of carrito" class="producto-item">
           <div class="imagen-producto">
             <img [src]="item.product.imagen" [alt]="item.product.title" />
+            
+            <!-- Badge de descuento -->
+            <div class="badge-descuento-checkout" *ngIf="tieneDescuento(item)">
+              {{ getDescuentoTexto(item) }}
+            </div>
           </div>
+          
           <div class="info-producto">
             <h4>{{ item.product.title }}</h4>
             <p class="cantidad">Cantidad: {{ item.cantidad }}</p>
-            <p class="precio">${{ item.price_unitario | number:'1.2-2' }} x {{ item.cantidad }}</p>
+            
+            <!-- SI NO TIENE DESCUENTO -->
+            <div class="precios-item" *ngIf="!tieneDescuento(item)">
+              <p class="precio">
+                ${{ item.price_unitario | number:'1.2-2' }} × {{ item.cantidad }}
+              </p>
+            </div>
+            
+            <!-- SI TIENE DESCUENTO -->
+            <div class="precios-item" *ngIf="tieneDescuento(item)">
+              <div class="precio-con-descuento">
+                <!-- Precio ORIGINAL tachado -->
+                <p class="precio-original-tachado">
+                  ${{ getPrecioOriginal(item) | number:'1.2-2' }}
+                </p>
+                
+                <!-- Precio CON DESCUENTO (rebajado) -->
+                <p class="precio-rebajado">
+                  ${{ getPrecioConDescuento(item) | number:'1.2-2' }} × {{ item.cantidad }}
+                </p>
+              </div>
+              
+              <!-- Mostrar cuánto se ahorró -->
+              <p class="ahorro-texto">
+                Ahorro: ${{ getMontoDescuento(item) | number:'1.2-2' }}
+              </p>
+            </div>
           </div>
+          
           <div class="total-producto">
             ${{ item.total | number:'1.2-2' }}
           </div>

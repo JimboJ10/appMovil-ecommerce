@@ -13,7 +13,6 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   
-  // 🔴 Flag para saber si ya se inicializó
   private initialized = false;
 
   constructor(
@@ -23,7 +22,6 @@ export class AuthService {
     this.initializeAuth();
   }
 
-  // 🔴 MÉTODO PARA INICIALIZAR AUTENTICACIÓN
   private async initializeAuth() {
     if (this.initialized) return;
 
@@ -36,9 +34,6 @@ export class AuthService {
         this.storage.get('token'),
         this.storage.get('user')
       ]);
-
-      console.log('🔐 Token recuperado:', token ? 'SÍ' : 'NO');
-      console.log('👤 Usuario recuperado:', user ? user.email : 'NO');
 
       if (token && user) {
         this.currentUserSubject.next(user);
@@ -54,15 +49,11 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/users/login`, { email, password })
       .pipe(
         tap(async (response) => {
-          console.log('✅ Login exitoso, guardando datos...');
           
           await Promise.all([
             this.storage.set('token', response.token),
             this.storage.set('user', response.user)
           ]);
-
-          console.log('💾 Token guardado:', response.token.substring(0, 20) + '...');
-          console.log('💾 Usuario guardado:', response.user.email);
 
           this.currentUserSubject.next(response.user);
         })
@@ -74,7 +65,6 @@ export class AuthService {
   }
 
   async logout() {
-    console.log('👋 Cerrando sesión...');
     
     await Promise.all([
       this.storage.remove('token'),
@@ -82,7 +72,6 @@ export class AuthService {
     ]);
     
     this.currentUserSubject.next(null);
-    console.log('✅ Sesión cerrada');
   }
 
   async getToken(): Promise<string | null> {
@@ -92,7 +81,6 @@ export class AuthService {
     }
     
     const token = await this.storage.get('token');
-    console.log('🔑 Token solicitado:', token ? 'EXISTE' : 'NO EXISTE');
     return token;
   }
 

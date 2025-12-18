@@ -66,15 +66,11 @@ export class OrderDetailPage implements OnInit {
   }
 
   irAResenas(producto: any) {
-    console.log('⭐ Navegando a reseñas del producto:', producto);
-    
-    // 🔴 USAR _ID DEL PRODUCTO (NO SLUG)
     if (!producto._id) {
       console.error('❌ Producto sin _id:', producto);
       return;
     }
     
-    console.log('✅ Navegando a reseñas con product_id:', producto._id);
     this.router.navigate(['/reviews', producto._id]);
   }
 }

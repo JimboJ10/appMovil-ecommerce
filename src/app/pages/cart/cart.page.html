@@ -40,12 +40,20 @@
             {{ obtenerImagenVariedad(item) }}
           </p>
 
-          <!-- Precio -->
+          <!-- PRECIO -->
           <div class="precios">
-            <span class="precio-actual">${{ item.price_unitario | number:'1.2-2' }}</span>
-            <span class="precio-original" *ngIf="item.discount > 0">
-              ${{ item.product.price_usd | number:'1.2-2' }}
-            </span>
+            <!-- SI TIENE DESCUENTO -->
+            <ng-container *ngIf="item.discount > 0">
+              <!-- Precio CON DESCUENTO (en negrita) -->
+              <span class="precio-actual">${{ (item.total / item.cantidad) | number:'1.2-2' }}</span>
+              <!-- Precio ORIGINAL (tachado) -->
+              <span class="precio-original">${{ item.price_unitario | number:'1.2-2' }}</span>
+            </ng-container>
+            
+            <!-- SI NO TIENE DESCUENTO -->
+            <ng-container *ngIf="item.discount === 0">
+              <span class="precio-actual">${{ item.price_unitario | number:'1.2-2' }}</span>
+            </ng-container>
           </div>
 
           <!-- Controles -->

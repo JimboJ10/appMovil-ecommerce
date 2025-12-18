@@ -91,9 +91,9 @@ export class HomePage implements OnInit {
     this.mostrarBannerDescuento = false;
   }
 
-  volverArriba() {
-    this.content.scrollToTop(500);
-  }
+  // volverArriba() {
+  //   this.content.scrollToTop(1000);
+  // }
 
   // Calcular tiempo restante para flash sale
   obtenerTiempoRestante(): string {
@@ -110,5 +110,9 @@ export class HomePage implements OnInit {
     const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
     
     return `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+  }
+
+  verTodo() {
+    this.router.navigate(['/tabs/categories']);
   }
 }

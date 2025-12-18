@@ -168,7 +168,6 @@ export class RegisterPage implements OnInit {
     return !!(campo && campo.invalid && campo.touched);
   }
 
-  // 🔴 OBTENER REQUISITOS DE PASSWORD - VERSIÓN CORREGIDA
   obtenerRequisitosPassword() {
     const passwordControl = this.formularioRegistro.get('password');
     
@@ -184,7 +183,6 @@ export class RegisterPage implements OnInit {
   
     const valor = passwordControl.value;
     
-    // 🔴 CALCULAR DIRECTAMENTE CADA REQUISITO
     return {
       tieneMayuscula: /[A-Z]/.test(valor),
       tieneMinuscula: /[a-z]/.test(valor),

@@ -1,3 +1,4 @@
+import { Product, Variedad } from './product.model';
 export interface Sale {
   _id?: string;
   user: string;

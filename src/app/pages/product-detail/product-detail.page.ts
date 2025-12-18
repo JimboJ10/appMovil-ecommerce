@@ -42,8 +42,7 @@ export class ProductDetailPage implements OnInit {
   cargando: boolean = true;
   cantidad: number = 1;
   variedadSeleccionada: Variedad | null = null;
-  
-  // Para las tabs de descripción
+
   tabSeleccionada: string = 'descripcion';
 
   constructor(
@@ -67,9 +66,6 @@ export class ProductDetailPage implements OnInit {
   async ngOnInit() {
     const slug = this.route.snapshot.paramMap.get('slug');
     
-    // 🔴 AGREGAR LOGS
-    console.log('🔍 Slug recibido:', slug);
-    
     if (slug) {
       await this.cargarProducto(slug);
     } else {
@@ -83,33 +79,16 @@ export class ProductDetailPage implements OnInit {
     try {
       this.cargando = true;
       
-      console.log('📡 Cargando producto con slug:', slug);
-      
-      const respuesta = await this.productService.getProductDetail(slug).toPromise();
-      
-      console.log('✅ Respuesta del servidor:', respuesta);
+      const timeNow = new Date().getTime();
+      let respuesta = await this.productService.getProductDetail(slug).toPromise();
       
       if (!respuesta || !respuesta.product) {
-        throw new Error('No se recibió el producto del servidor');
+        throw new Error('Producto no encontrado');
       }
       
       this.producto = respuesta.product;
-  
-      // Logs de debug
-      console.log('📦 Producto cargado:');
-      console.log('  - type_inventario:', this.producto?.type_inventario);
-      console.log('  - stock:', this.producto?.stock);
-      console.log('  - variedades:', this.producto?.variedades);
-  
-      // Seleccionar la primera variedad si existe
-      if (this.producto?.variedades && this.producto.variedades.length > 0) {
-        this.variedadSeleccionada = this.producto.variedades[0];
-        console.log('✅ Variedad seleccionada:', this.variedadSeleccionada);
-      } else {
-        console.log('ℹ️ No hay variedades para este producto');
-      }
-      
-      console.log('📊 Stock disponible:', this.obtenerStockDisponible());
+      // Dejar que el usuario la seleccione manualmente
+      this.variedadSeleccionada = null;
       
     } catch (error: any) {
       console.error('❌ Error al cargar producto:', error);
@@ -149,24 +128,15 @@ export class ProductDetailPage implements OnInit {
 
   obtenerStockDisponible(): number {
     if (!this.producto) return 0;
-  
-    // Si es inventario múltiple (type_inventario === 2)
     if (this.producto.type_inventario === 2) {
-      // Si hay variedades disponibles
-      if (this.producto.variedades && this.producto.variedades.length > 0) {
-        // Si hay una variedad seleccionada, devolver su stock
-        if (this.variedadSeleccionada) {
-          return this.variedadSeleccionada.stock;
-        }
-        // Si NO hay variedad seleccionada, devolver 0 (debe seleccionar una)
-        return 0;
-      } else {
-        // Si NO hay variedades configuradas, usar el stock general del producto
-        return this.producto.stock;
+      
+      if (this.variedadSeleccionada) {
+        return this.variedadSeleccionada.stock;
       }
+      
+      // SI NO HAY VARIEDAD SELECCIONADA, DEVOLVER STOCK ORIGINAL DEL PRODUCTO
+      return this.producto.stock;
     }
-    
-    // Si es inventario único (type_inventario === 1), devolver stock del producto
     return this.producto.stock;
   }
 
@@ -209,12 +179,6 @@ export class ProductDetailPage implements OnInit {
       return;
     }
   
-    console.log('🛒 Intentando agregar al carrito...');
-    console.log('  - Producto:', this.producto?.title);
-    console.log('  - Stock disponible:', this.obtenerStockDisponible());
-    console.log('  - Cantidad:', this.cantidad);
-    console.log('  - Variedad seleccionada:', this.variedadSeleccionada);
-  
     // Validar stock
     const stockDisponible = this.obtenerStockDisponible();
     if (stockDisponible === 0) {
@@ -237,16 +201,15 @@ export class ProductDetailPage implements OnInit {
     }
   
     try {
-      // 🔴 VERIFICAR SI EL PRODUCTO YA ESTÁ EN EL CARRITO
+      // VERIFICAR SI EL PRODUCTO YA ESTÁ EN EL CARRITO
       const existingCart = await this.cartService.checkProductInCart(
         this.producto!._id!,
         this.variedadSeleccionada?._id
       );
   
       if (existingCart) {
-        console.log('⚠️ Producto ya existe en el carrito');
         
-        // 🔴 MOSTRAR MENSAJE Y NO AGREGAR
+        // MOSTRAR MENSAJE Y NO AGREGAR
         await this.mostrarToast(
           'Este producto ya está en tu carrito. Ve al carrito para modificar la cantidad.',
           'warning'
@@ -258,7 +221,7 @@ export class ProductDetailPage implements OnInit {
         return;
       }
   
-      // 🔴 SI NO EXISTE, AGREGAR NUEVO PRODUCTO AL CARRITO
+      // SI NO EXISTE, AGREGAR NUEVO PRODUCTO AL CARRITO
       const cartData: any = {
         user: user._id,
         product: this.producto?._id,
@@ -274,8 +237,6 @@ export class ProductDetailPage implements OnInit {
       if (this.variedadSeleccionada) {
         cartData.variedad = this.variedadSeleccionada._id;
       }
-  
-      console.log('📤 Datos a enviar al carrito:', cartData);
   
       await this.cartService.addToCart(cartData).toPromise();
       await this.mostrarToast('Producto agregado al carrito', 'success');
@@ -294,9 +255,6 @@ export class ProductDetailPage implements OnInit {
 
   verResenas() {
     if (this.producto) {
-      console.log('🔍 Navegando a ver reseñas del producto:', this.producto._id);
-      
-      // 🔴 NAVEGAR CON _ID (NO SLUG)
       this.router.navigate(['/reviews', this.producto._id]);
     }
   }
@@ -311,7 +269,7 @@ export class ProductDetailPage implements OnInit {
     await toast.present();
   }
 
-  volverArriba() {
-    this.content.scrollToTop(500);
-  }
+  // volverArriba() {
+  //   this.content.scrollToTop(500);
+  // }
 }

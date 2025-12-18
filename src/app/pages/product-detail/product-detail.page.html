@@ -54,7 +54,6 @@
           size="medium">
         </app-rating-stars>
         <span class="rating-texto">({{ producto.count_review }} reseñas)</span>
-        <!-- 🔴 SOLO VER RESEÑAS, NO OPINAR -->
         <ion-button fill="clear" size="small" (click)="verResenas()">
           Ver todas
         </ion-button>
@@ -78,12 +77,20 @@
 
       <!-- Stock -->
       <div class="seccion-stock">
-        <ion-chip [color]="obtenerStockDisponible() > 0 ? 'success' : 'danger'">
+        <ion-chip 
+          [color]="obtenerStockDisponible() > 0 ? 'success' : 'danger'">
           <ion-icon [name]="obtenerStockDisponible() > 0 ? 'checkmark-circle' : 'close-circle'"></ion-icon>
           <ion-label>
             {{ obtenerStockDisponible() > 0 ? 'Disponible (' + obtenerStockDisponible() + ' unidades)' : 'Agotado' }}
           </ion-label>
         </ion-chip>
+
+        <ion-note 
+          *ngIf="producto.type_inventario === 2 && producto.variedades && producto.variedades.length > 0 && !variedadSeleccionada"
+          color="medium"
+          style="display: block; margin-top: 8px; font-size: 13px;">
+          💡 El stock puede variar según la variedad seleccionada
+        </ion-note>
       </div>
 
       <!-- Variedades (si tiene inventario múltiple) -->
@@ -187,10 +194,10 @@
     </div>
 
     <!-- Botón volver arriba -->
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="fab-scroll">
+    <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="fab-scroll">
       <ion-fab-button size="small" (click)="volverArriba()">
         <ion-icon name="arrow-up"></ion-icon>
       </ion-fab-button>
-    </ion-fab>
+    </ion-fab> -->
   </div>
 </ion-content>

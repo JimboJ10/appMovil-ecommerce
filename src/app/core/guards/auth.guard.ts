@@ -8,14 +8,10 @@ export const authGuard = async () => {
 
   // Esperar a obtener el token
   const token = await authService.getToken();
-  
-  console.log('🔒 AuthGuard - Token:', token ? 'VÁLIDO' : 'NO VÁLIDO');
 
   if (token) {
     return true;
   }
-
-  console.log('⛔ Redirigiendo a login...');
   router.navigate(['/auth/login']);
   return false;
 };

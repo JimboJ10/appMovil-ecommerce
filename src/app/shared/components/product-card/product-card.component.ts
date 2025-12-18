@@ -18,9 +18,7 @@ export class ProductCardComponent {
   constructor(private router: Router) {}
 
   viewProduct() {
-    console.log('🔍 Navegando a producto:', this.product);
     
-    // 🔴 USAR SLUG SI EXISTE, SINO USAR _ID
     const identifier = this.product.slug || this.product._id;
     
     if (!identifier) {
@@ -28,7 +26,6 @@ export class ProductCardComponent {
       return;
     }
     
-    console.log('✅ Navegando con:', identifier);
     this.router.navigate(['/product-detail', identifier]);
   }
 

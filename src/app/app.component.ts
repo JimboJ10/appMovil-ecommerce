@@ -9,6 +9,6 @@ import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 })
 export class AppComponent {
   constructor() {
-    console.log('AppComponent inicializado'); // 🔴 LOG para debug
+    
   }
 }

@@ -107,20 +107,14 @@ export class CheckoutPage implements OnInit, AfterViewInit {
 
   async initPayPal() {
     try {
-      console.log('🔄 Iniciando PayPal...');
-      console.log('📦 Total a pagar:', this.resumen.total);
-      console.log('🔑 Client ID:', environment.paypalClientId);
 
       const paypal = await loadScript({
         clientId: environment.paypalClientId,
         currency: 'USD'
       });
 
-      console.log('✅ Script de PayPal cargado:', paypal);
-
       if (paypal && paypal.Buttons) {
         this.paypalLoaded = true;
-        console.log('✅ PayPal Buttons disponible');
         
         // Esperar un tick para asegurar que el DOM está listo
         setTimeout(() => {
@@ -138,9 +132,6 @@ export class CheckoutPage implements OnInit, AfterViewInit {
 
   renderPayPalButton() {
     const paypalContainer = document.getElementById('paypal-button-container');
-    
-    console.log('🎨 Renderizando botón de PayPal...');
-    console.log('📦 Contenedor encontrado:', paypalContainer);
 
     if (!paypalContainer) {
       console.error('❌ Contenedor #paypal-button-container no encontrado');
@@ -153,7 +144,6 @@ export class CheckoutPage implements OnInit, AfterViewInit {
     try {
       (window as any).paypal.Buttons({
         createOrder: (data: any, actions: any) => {
-          console.log('💰 Creando orden de PayPal por:', this.resumen.total);
           
           return actions.order.create({
             purchase_units: [{
@@ -164,9 +154,7 @@ export class CheckoutPage implements OnInit, AfterViewInit {
           });
         },
         onApprove: async (data: any, actions: any) => {
-          console.log('✅ Pago aprobado, capturando orden...');
           const order = await actions.order.capture();
-          console.log('✅ Orden capturada:', order);
           await this.procesarPago(order);
         },
         onError: (err: any) => {
@@ -174,17 +162,40 @@ export class CheckoutPage implements OnInit, AfterViewInit {
           this.mostrarToast('Error al procesar el pago con PayPal', 'danger');
         },
         onCancel: (data: any) => {
-          console.log('⚠️ Pago cancelado por el usuario');
           this.mostrarToast('Pago cancelado', 'warning');
         }
       }).render('#paypal-button-container');
 
-      console.log('✅ Botón de PayPal renderizado correctamente');
     } catch (error) {
       console.error('❌ Error al renderizar botón de PayPal:', error);
       this.mostrarToast('Error al renderizar botón de PayPal', 'danger');
     }
   }
+
+  getPrecioConDescuento(item: Cart): number {
+    return item.total / item.cantidad;
+  }
+
+  getPrecioOriginal(item: Cart): number {
+    return item.price_unitario;
+  }
+
+  tieneDescuento(item: Cart): boolean {
+    return item.discount > 0;
+  }
+
+  getDescuentoTexto(item: Cart): string {
+    if (item.type_discount === 1) {
+      return `-${item.discount}%`;
+    } else {
+      return `-$${item.discount}`;
+    }
+  }
+
+  getMontoDescuento(item: Cart): number {
+    return item.subtotal - item.total;
+  }
+
 
   async procesarPago(paypalOrder: any) {
     if (!this.direccionSeleccionada) {
@@ -227,8 +238,6 @@ export class CheckoutPage implements OnInit, AfterViewInit {
         }
       };
 
-      console.log('📤 Enviando orden al servidor:', datosOrden);
-
       await this.orderService.createOrder(datosOrden).toPromise();
 
       await loading.dismiss();
@@ -255,7 +264,6 @@ export class CheckoutPage implements OnInit, AfterViewInit {
     
     // Reinicializar PayPal si ya estaba cargado
     if (this.paypalLoaded) {
-      console.log('🔄 Reinicializando PayPal con nueva dirección...');
       const container = document.getElementById('paypal-button-container');
       if (container) {
         container.innerHTML = '';

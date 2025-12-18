@@ -22,7 +22,6 @@ addIcons(icons);
 
 console.log('🚀 Iniciando bootstrap...');
 
-// 🔴 FUNCIÓN PARA INICIALIZAR STORAGE
 export function initializeStorage(storage: Storage) {
   return () => storage.create();
 }
@@ -38,7 +37,7 @@ bootstrapApplication(AppComponent, {
       withInterceptors([authInterceptor, errorInterceptor])
     ),
     importProvidersFrom(IonicStorageModule.forRoot()),
-    // 🔴 INICIALIZAR STORAGE ANTES DE LA APP
+    // INICIALIZAR STORAGE ANTES DE LA APP
     {
       provide: APP_INITIALIZER,
       useFactory: initializeStorage,

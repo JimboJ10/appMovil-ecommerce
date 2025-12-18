@@ -42,7 +42,6 @@ export class SettingsPage implements OnInit {
       birthday: ['']
     });
 
-    // 🔴 FORMULARIO DE CAMBIO DE CONTRASEÑA
     this.formularioPassword = this.fb.group({
       currentPassword: ['', [Validators.required, Validators.minLength(8)]],
       newPassword: ['', [
@@ -77,7 +76,6 @@ export class SettingsPage implements OnInit {
     }
   }
 
-  // 🔴 VALIDADOR: Password seguro
   validadorPasswordSeguro() {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;
@@ -101,7 +99,6 @@ export class SettingsPage implements OnInit {
     };
   }
 
-  // 🔴 VALIDADOR: Passwords coinciden
   validadorPasswordsCoinciden(passwordKey: string, confirmarPasswordKey: string) {
     return (formGroup: AbstractControl): ValidationErrors | null => {
       const password = formGroup.get(passwordKey);
@@ -123,8 +120,6 @@ export class SettingsPage implements OnInit {
     };
   }
 
-  // 🔴 OBTENER REQUISITOS DE PASSWORD
-  // 🔴 OBTENER REQUISITOS DE PASSWORD - VERSIÓN CORREGIDA
   obtenerRequisitosPassword() {
     const passwordControl = this.formularioPassword.get('newPassword');
     
@@ -139,8 +134,7 @@ export class SettingsPage implements OnInit {
     }
   
     const valor = passwordControl.value;
-    
-    // 🔴 CALCULAR DIRECTAMENTE CADA REQUISITO
+
     return {
       tieneMayuscula: /[A-Z]/.test(valor),
       tieneMinuscula: /[a-z]/.test(valor),
@@ -156,7 +150,6 @@ export class SettingsPage implements OnInit {
     }
   }
 
-  // 🔴 TOGGLE FORMULARIO DE CAMBIO DE CONTRASEÑA
   toggleCambioPassword() {
     this.mostrarCambioPassword = !this.mostrarCambioPassword;
     if (!this.mostrarCambioPassword) {
@@ -199,7 +192,7 @@ export class SettingsPage implements OnInit {
     }
   }
 
-  // 🔴 CAMBIAR CONTRASEÑA
+  // CAMBIAR CONTRASEÑA
   async cambiarPassword() {
     if (this.formularioPassword.invalid) {
       Object.keys(this.formularioPassword.controls).forEach(key => {

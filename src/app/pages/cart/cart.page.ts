@@ -85,16 +85,35 @@ export class CartPage implements OnInit {
     }
   
     try {
-      const subtotal = item.product.price_usd * nuevaCantidad;
-      const total = item.price_unitario * nuevaCantidad;
+      const precioOriginal = item.price_unitario;
+      
+      const subtotal = precioOriginal * nuevaCantidad;
+      
+      let precioConDescuento = precioOriginal;
+      
+      if (item.discount > 0) {
+        if (item.type_discount === 1) {
+          // Descuento por porcentaje
+          precioConDescuento = precioOriginal - (precioOriginal * item.discount / 100);
+        } else {
+          // Descuento por monto fijo
+          precioConDescuento = precioOriginal - item.discount;
+        }
+      }
+      
+      const total = precioConDescuento * nuevaCantidad;
   
-      // 🔴 DEFINIR EL TIPO CORRECTAMENTE
       const datosActualizados: any = {
         _id: item._id,
         product: item.product._id,
         cantidad: nuevaCantidad,
-        subtotal: subtotal,
-        total: total
+        type_discount: item.type_discount,
+        discount: item.discount,
+        code_cupon: item.code_cupon,
+        code_discount: item.code_discount,
+        price_unitario: precioOriginal, // Precio ORIGINAL
+        subtotal: subtotal,             // Subtotal sin descuento
+        total: total                    // Total con descuento
       };
   
       // Agregar variedad si existe
@@ -107,8 +126,6 @@ export class CartPage implements OnInit {
           datosActualizados.variedad = variedadId;
         }
       }
-  
-      console.log('📤 Enviando actualización:', datosActualizados);
   
       await this.cartService.updateCartItem(datosActualizados).toPromise();
       await this.cargarCarrito();
